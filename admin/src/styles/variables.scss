@@ -1,0 +1,155 @@
+$blue:#324157;
+$light-blue:#3A71A8;
+$red:#C03639;
+$pink: #E65D6E;
+$green: #30B08F;
+$tiffany: #4AB7BD;
+$yellow:#FEC171;
+$panGreen: #30B08F;
+
+//sidebar
+$menuBg:#304156;
+$subMenuBg:#1f2d3d;
+$menuHover:#001528;
+
+// default style value
+
+$borderStyle: 1px solid #d8dce5;
+
+// side bar
+$sideBarWidth: 180px;
+$sideBarHideWidth: 36px;
+// side bar theme
+$submenuTitleColor: #f4f4f5;
+$menuTextColor: #bfcbd9;
+// menu item height
+$menuItemHeight: 56px;
+$submenuItemHeight: 50px;
+// menu item when hide
+$menuPopPadding: 5px 0;
+// nav bar height
+$navBarHeight: 50px;
+// user avatar
+$userAvatarWidth: 40px;
+$userAvatarHeight: 40px;
+// user avatar caret
+$userAvatarCaretTop: 25px;
+$userAvatarCaretRight: -20px;
+// theme switch vertical align
+$themeSwitchVerticalAlign: 15px;
+// screenfull svg vertical align
+$screenfullSvgVerticalAlign: 10px;
+// color-picker
+$colorPickerWidth: 36px;
+$colorPickerHeight: 36px;
+// tag view theme
+$tagActiveBg: #42b983;
+$tagTopRadius: 0px;
+$tagHeight: 34px;
+$tagCloseHoverBg: #b4bccc;
+$tagItemMargin: 5px;
+$tagActiveBefore: (
+  content: '',
+  background: #fff,
+  display: inline-block,
+  width: 8px,
+  height: 8px,
+  border-radius: 50%,
+  position: relative,
+  margin-right: 2px,
+);
+$tagActiveAfter: (
+  content: ''
+);
+
+// custom layout style variables
+$style: mini;
+@if $style == mini {
+  // side bar
+  $sideBarWidth: 230px;
+  $sideBarHideWidth: 40px;
+  // side bar theme
+  $submenuTitleColor: #303133;
+  $menuBg: #fff;
+  $subMenuBg: white;
+  $menuHover: #eee;
+  $menuTextColor: #303133;
+  // menu item height
+  $menuItemHeight: 45px;
+  $submenuItemHeight: 40px;
+  // menu item when hide
+  $menuPopPadding: 0;
+  // nav bar height
+  $navBarHeight: 40px;
+  // user avatar
+  $userAvatarWidth: 30px;
+  $userAvatarHeight: 30px;
+  // user avatar caret
+  $userAvatarCaretTop: 20px;
+  $userAvatarCaretRight: -14px;
+  // theme switch vertical align
+  $themeSwitchVerticalAlign: 12px;
+  // screenfull svg vertical align
+  $screenfullSvgVerticalAlign: 6px;
+  // color-picker
+  $colorPickerWidth: 30px;
+  $colorPickerHeight: 30px;
+  // tag view theme
+  $tagActiveBg: #42b983;
+  $tagTopRadius: 10px;
+  $tagHeight: 31px;
+  $tagCloseHoverBg: #f56c6c;
+  $tagItemMargin: 0px;
+  $tagActiveBefore: (
+    content: '',
+    z-index: 1,
+    position: absolute,
+    display: inline-block,
+    width: 15px,
+    height: 15px,
+    bottom: 0px,
+    margin-left: -24px,
+    margin-bottom: -1px,
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-radial-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(66, 185, 131) 78%),
+    // background: radial-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+    /* Safari 4-5, Chrome 1-9 */
+    // background: -webkit-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+    /* Firefox 3.6+ */
+    // background: -moz-radial-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+    /* IE 10 */
+    // background: -ms-radial-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+  );
+  $tagActiveAfter: (
+    content: '',
+    z-index: 1,
+    position: absolute,
+    display: inline-block,
+    width: 15px,
+    height: 15px,
+    bottom: 0px,
+    margin-left: 9px,
+    margin-bottom: -1px,
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-radial-gradient(right top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(66, 185, 131) 78%) !important,
+    // background: radial-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+    /* Safari 4-5, Chrome 1-9 */
+    // background: -webkit-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+    /* Firefox 3.6+ */
+    // background: -moz-radial-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+    /* IE 10 */
+    // background: -ms-radial-gradient(left top,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0) 70%,rgb(178, 100, 218) 70%) !important,
+  );
+}
+
+
+$commonContainerStyle: (
+  border: 1px solid #ebeef5,
+  background-color: #fff,
+  color: #303133,
+  -webkit-transition: .3s,
+  transition: .3s,
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1),
+  padding: 10px 0,
+  border-radius: 4px,
+)
