@@ -279,7 +279,7 @@ export default {
       }
       getUserList(param).then((res) => {
         console.log(res)
-        this.userList = res.data.users
+        this.userList = res.data.list
         this.total = res.data.total
       })
     },

@@ -1,6 +1,6 @@
 {
   "name": "admin",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "A scaffolding base on Vue.js and Element-UI",
   "author": "wangzhf",
   "license": "MIT",
