@@ -70,7 +70,9 @@ export default {
     roleUserManager: '角色用户管理',
     roleResourceManager: '角色资源管理',
     userCenter: '个人中心',
-    me: '我的'
+    me: '我的',
+    template: '模板',
+    table: '表格'
   },
   navbar: {
     logOut: '退出登录',

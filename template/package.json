@@ -1,0 +1,11 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "Generate vue pages with template.",
+  "main": "index.js",
+  "author": "wangzhf",
+  "license": "MIT",
+  "dependencies": {
+    "art-template": "^4.13.1"
+  }
+}

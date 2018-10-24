@@ -201,6 +201,38 @@ let menuList = [
         parentId: 11
       }
     ]
+  },
+  {
+    id: 13,
+    title: '模板',
+    menuName: '模板',
+    menuCode: 'template',
+    type: 'menu',
+    uri: '/template',
+    path: '/template',
+    icon: 'iconmoon_icon-insert-template',
+    component: '/layout/Layout',
+    usable: 1,
+    sort: 20,
+    remarks: '',
+    parentId: null,
+    children: [
+      {
+        id: 13,
+        title: '表格样式',
+        menuName: '表格样式',
+        menuCode: 'table',
+        type: 'menu',
+        uri: '/table',
+        path: '/table',
+        icon: 'solid_table',
+        component: '/template/table/index2',
+        usable: 1,
+        sort: 20,
+        remarks: '',
+        parentId: 11
+      }
+    ]
   }
 ]
 

@@ -70,7 +70,9 @@ export default {
     roleUserManager: 'Role User Manager',
     roleResourceManager: 'Role Resource Manager',
     userCenter: 'User Center',
-    me: 'Me'
+    me: 'Me',
+    template: 'Template',
+    table: 'Table'
   },
   navbar: {
     logOut: 'Log Out',

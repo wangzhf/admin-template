@@ -57,8 +57,8 @@ export default [
     children: [
       {
         path: 'dashboard',
-        // component: () => import('@/views/service/dashboard/index'),
-        component: () => import('@/va/pages/table/VATable'),
+        component: () => import('@/views/service/dashboard/index'),
+        // component: () => import('@/va/pages/table/VATable'),
         name: 'dashboard',
         // alwaysShow: true,
         meta: { title: 'dashboard', icon: 'solid_home', noCache: true }

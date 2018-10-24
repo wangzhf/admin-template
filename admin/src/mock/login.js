@@ -98,6 +98,20 @@ const userMap = {
         method: 'GET',
         type: 'menu',
         uri: '/me'
+      },
+      {
+        menuCode: 'template',
+        menuName: '模板',
+        method: 'GET',
+        type: 'menu',
+        uri: '/template'
+      },
+      {
+        menuCode: 'table',
+        menuName: '表格',
+        method: 'GET',
+        type: 'menu',
+        uri: '/table'
       }
     ]
   },
