@@ -163,23 +163,13 @@
 
     <!-- 配置角色界面 -->
     <el-dialog v-el-drag-dialog :visible.sync="treeDialogVisible" :close-on-click-modal="false" title="配置用户角色">
-      <div class="select-tree">
-        <el-scrollbar
-          tag="div"
-          class="is-empty"
-          wrap-class="el-select-dropdown__wrap"
-          view-class="el-select-dropdown__list">
-          <el-tree
-            ref="treeDialog"
-            :data="treeDataList"
-            :props="treeProps"
-            :check-on-click-node="true"
-            :default-checked-keys="defaultCheckedKeys"
-            node-key="id"
-            show-checkbox
-          />
-        </el-scrollbar>
-      </div>
+      <im-tree
+        ref="treeDialog"
+        :query-data="treeDialogQueryData"
+        :is-tree-dialog-loading="isTreeDialogLoading"
+        :tree-props="treeProps"
+        url="/user/role"
+      />
       <span slot="footer" class="dialog-footer">
         <el-button @click.native="treeDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleTreeDialogConfirm">确 定</el-button>
@@ -193,6 +183,7 @@ import elDragDialog from '@/directive/el-dragDialog' // base on element-ui
 import ImSelect from '@/components/Im/Select'
 import commonAPI from '@/api/common'
 import selectTree from '@/components/Im/SelectTree'
+import ImTree from '@/components/Im/Tree'
 // import treeter from '@/components/Tree/treeter'
 
 // 定义请求链接地址
@@ -201,7 +192,7 @@ const UpdateUrl = '/user/edit'
 const DeleteUrl = '/user/delete'
 const BatchDeleteUrl = '/user/batchDelete'
 const SearchUrl = '/user/userList'
-const listTreeDataUrl = '/user/role'
+// const listTreeDataUrl = '/user/role'
 const addTreeDataUrl = '/user/role/add'
 
 export default {
@@ -209,7 +200,8 @@ export default {
   directives: { elDragDialog },
   components: {
     ImSelect,
-    'im-el-select-tree': selectTree
+    'im-el-select-tree': selectTree,
+    ImTree
   },
   data() {
     return {
@@ -265,7 +257,10 @@ export default {
       },
       defaultCheckedKeys: [],
       // 当前选中行ID
-      linkId: null
+      linkId: null,
+      // treeDialog是否加载数据
+      isTreeDialogLoading: false,
+      treeDialogQueryData: null
 
       // select tree
 
@@ -443,15 +438,15 @@ export default {
       const param = {
         id: row.id
       }
-      commonAPI.Post(listTreeDataUrl, param).then(res => {
-        this.treeDataList = res.data.allData
-        this.defaultCheckedKeys = res.data.data
-        this.treeDialogVisible = true
-      })
+      this.treeDialogQueryData = param
+      this.isTreeDialogLoading = true
+      this.treeDialogVisible = true
     },
     // tree dialog 确认事件
     handleTreeDialogConfirm() {
-      const checkedKeys = this.$refs.treeDialog.getCheckedKeys()
+      const checkedKeys = this.$refs.treeDialog.getSelection().map(item => {
+        return item.id
+      })
       const params = {
         id: this.linkId,
         data: checkedKeys
