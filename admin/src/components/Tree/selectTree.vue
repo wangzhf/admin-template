@@ -56,6 +56,7 @@
             :data="treeData"
             :show-checkbox="multiple"
             :props="propNames"
+            :default-expand-all="defaultExpandAll"
             node-key="id"
             check-strictly
             @check-change="handleCheckChange"
@@ -155,6 +156,10 @@ export default {
       default() {
         return t('el.select.placeholder')
       }
+    },
+    defaultExpandAll: {
+      type: Boolean,
+      default: false
     }
   },
 

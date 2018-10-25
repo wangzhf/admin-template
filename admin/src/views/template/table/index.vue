@@ -1,20 +1,18 @@
 <template>
   <div class="content-container">
-    <el-form ref="searchForm" :inline="true">
+    <el-form ref="searchForm" :inline="true" label-width="80px">
       <el-form-item label="用户姓名">
         <el-input v-model.trim="searchForm.userName" />
       </el-form-item>
       <el-form-item label="用户代码">
         <el-input v-model.trim="searchForm.userCode" />
       </el-form-item>
-
       <el-form-item label="省">
         <im-select
           url="/common/province/list"
           @select-change="(val) => searchForm.province = val"
         />
       </el-form-item>
-
       <el-form-item label="市">
         <im-select
           :dependon-value="searchForm.province + ''"
@@ -23,6 +21,14 @@
           @select-change="(val) => searchForm.city = val"
         />
       </el-form-item>
+
+      <el-form-item label="菜单">
+        <im-el-select-tree
+          url="/menu/list"
+          @select-change="(val) => searchForm.menuId = val"
+        />
+      </el-form-item>
+
       <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
     </el-form>
     <el-row>
@@ -70,6 +76,8 @@
       <el-table-column prop="userCode" label="代码" sortable />
       <el-table-column label="操作" >
         <template slot-scope="scope">
+          <el-button
+            @click.stop="handleTreeDialog(scope.$index, scope.row)">关联角色</el-button>
           <el-button
             @click.stop="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
@@ -153,6 +161,30 @@
       </div>
     </el-dialog>
 
+    <!-- 配置角色界面 -->
+    <el-dialog v-el-drag-dialog :visible.sync="treeDialogVisible" :close-on-click-modal="false" title="配置用户角色">
+      <div class="select-tree">
+        <el-scrollbar
+          tag="div"
+          class="is-empty"
+          wrap-class="el-select-dropdown__wrap"
+          view-class="el-select-dropdown__list">
+          <el-tree
+            ref="treeDialog"
+            :data="treeDataList"
+            :props="treeProps"
+            :check-on-click-node="true"
+            :default-checked-keys="defaultCheckedKeys"
+            node-key="id"
+            show-checkbox
+          />
+        </el-scrollbar>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click.native="treeDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleTreeDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -160,12 +192,24 @@
 import elDragDialog from '@/directive/el-dragDialog' // base on element-ui
 import ImSelect from '@/components/Im/Select'
 import commonAPI from '@/api/common'
+import selectTree from '@/components/Im/SelectTree'
+// import treeter from '@/components/Tree/treeter'
+
+// 定义请求链接地址
+const AddUrl = '/user/add'
+const UpdateUrl = '/user/edit'
+const DeleteUrl = '/user/delete'
+const BatchDeleteUrl = '/user/batchDelete'
+const SearchUrl = '/user/userList'
+const listTreeDataUrl = '/user/role'
+const addTreeDataUrl = '/user/role/add'
 
 export default {
   name: 'Table',
   directives: { elDragDialog },
   components: {
-    ImSelect
+    ImSelect,
+    'im-el-select-tree': selectTree
   },
   data() {
     return {
@@ -175,7 +219,8 @@ export default {
         userName: '',
         userCode: '',
         province: null,
-        city: null
+        city: null,
+        menuId: null
       },
 
       // 列表默认展开的keys
@@ -209,7 +254,21 @@ export default {
       },
       addFormRules: {
 
-      }
+      },
+
+      // tree dialog
+      treeDialogVisible: false,
+      treeDataList: [],
+      treeProps: {
+        children: 'children',
+        label: 'roleName'
+      },
+      defaultCheckedKeys: [],
+      // 当前选中行ID
+      linkId: null
+
+      // select tree
+
     }
   },
 
@@ -248,7 +307,7 @@ export default {
         userName: this.searchForm.userName,
         userCode: this.searchForm.userCode
       }
-      commonAPI.Post('/user/userList', params).then(res => {
+      commonAPI.Post(SearchUrl, params).then(res => {
         this.list = res.data.list
         this.total = res.data.total
       }).catch(err => {
@@ -270,7 +329,7 @@ export default {
       this.$confirm('确认删除该记录吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        commonAPI.Post('/user/delete', { id: row.id }).then(res => {
+        commonAPI.Post(DeleteUrl, { id: row.id }).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功'
@@ -287,13 +346,15 @@ export default {
       this.$confirm('确认删除选中记录吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        commonAPI.Get('/user/batchDelete', { ids: ids }).then(res => {
+        commonAPI.Get(BatchDeleteUrl, { ids: ids }).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功'
           })
         })
         this.load()
+      }).catch(() => {
+        // ... cancel
       })
     },
 
@@ -342,7 +403,7 @@ export default {
         if (valid) {
           this.$confirm('确认提交吗？', '提示', {}).then(() => {
             const param = Object.assign({}, this.editForm)
-            commonAPI.Post('/user/edit', param).then(res => {
+            commonAPI.Post(UpdateUrl, param).then(res => {
               this.$message({
                 type: 'success',
                 message: '操作成功'
@@ -363,7 +424,7 @@ export default {
         if (valid) {
           this.$confirm('确认提交吗？', '提示', {}).then(() => {
             const param = Object.assign({}, this.addForm)
-            commonAPI.Post('/user/add', param).then(res => {
+            commonAPI.Post(AddUrl, param).then(res => {
               this.$message({
                 message: '提交成功',
                 type: 'success'
@@ -374,6 +435,34 @@ export default {
             })
           })
         }
+      })
+    },
+    // tree dialog 显示
+    handleTreeDialog(index, row) {
+      this.linkId = row.id
+      const param = {
+        id: row.id
+      }
+      commonAPI.Post(listTreeDataUrl, param).then(res => {
+        this.treeDataList = res.data.allData
+        this.defaultCheckedKeys = res.data.data
+        this.treeDialogVisible = true
+      })
+    },
+    // tree dialog 确认事件
+    handleTreeDialogConfirm() {
+      const checkedKeys = this.$refs.treeDialog.getCheckedKeys()
+      const params = {
+        id: this.linkId,
+        data: checkedKeys
+      }
+      commonAPI.Post(addTreeDataUrl, params).then(res => {
+        this.$message({
+          type: 'success',
+          message: '操作成功'
+        })
+        this.treeDialogVisible = false
+        this.linkId = null
       })
     }
   }

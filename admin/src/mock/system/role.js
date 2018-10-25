@@ -116,16 +116,21 @@ export default {
       userRoles.filter(item => {
         if (id === item.id) {
           ret.roles = item.roles
+          ret.data = item.roles
         }
       })
     }
     ret.allRoles = Roles
+    ret.allData = Roles
     return ret
   },
 
   addUserRole: config => {
     const data = JSON.parse(config.body) || {}
-    const roles = data.roles || []
+    let roles = data.roles
+    if (data.data) {
+      roles = data.data
+    }
     const id = data.id
     let match = false
     userRoles.filter(userRole => {
