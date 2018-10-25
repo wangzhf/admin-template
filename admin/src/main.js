@@ -42,8 +42,6 @@ handleRouter().then((res) => {
   for (let i = 0; i < res.length; i++) {
     asyncRouterMap.splice(i, 0, res[i])
   }
-  console.log('asyncRouterMap: ')
-  console.log(asyncRouterMap)
   new Vue({
     el: '#app',
     router,

@@ -278,7 +278,6 @@ export default {
         userCode: this.userInfo.userCode
       }
       getUserList(param).then((res) => {
-        console.log(res)
         this.userList = res.data.list
         this.total = res.data.total
       })
@@ -399,7 +398,6 @@ export default {
       }
     },
     handleRowClick(row) {
-      console.log(row)
       this.$refs.multipleTable.toggleRowExpansion(row)
     },
     handleRowChange(row, expandedRows) {
@@ -418,7 +416,6 @@ export default {
         id: row.id
       }
       listUserRole(param).then(res => {
-        console.log(res)
         this.roleTreeList = res.data.allRoles
         this.userRoles = res.data.roles
         this.dialogVisible = true

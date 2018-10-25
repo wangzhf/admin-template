@@ -185,7 +185,6 @@ export default {
             type: 'error',
             message: '操作失败'
           })
-          console.log(checkKeys)
           console.log(err)
         })
       })
@@ -231,7 +230,6 @@ export default {
     },
     load() {
       resourceAPI.listResource().then(res => {
-        console.log(res)
         this.resourceTree = []
         this.resourceTree.push(...res.data)
       })

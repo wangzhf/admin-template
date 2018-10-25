@@ -9,25 +9,19 @@
       </el-form-item>
 
       <el-form-item label="省">
-        <el-select v-model="searchForm.province" placeholder="请选择" clearable>
-          <el-option
-            v-for="item in provinceList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <im-select
+          url="/common/province/list"
+          @select-change="(val) => searchForm.province = val"
+        />
       </el-form-item>
 
       <el-form-item label="市">
-        <el-select v-model="searchForm.city" placeholder="请选择" clearable>
-          <el-option
-            v-for="item in cityList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <im-select
+          :dependon-value="searchForm.province + ''"
+          dependon-key="province"
+          url="/common/city/list"
+          @select-change="(val) => searchForm.city = val"
+        />
       </el-form-item>
       <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
     </el-form>
@@ -164,11 +158,15 @@
 
 <script>
 import elDragDialog from '@/directive/el-dragDialog' // base on element-ui
+import ImSelect from '@/components/Im/Select'
 import commonAPI from '@/api/common'
 
 export default {
   name: 'Table',
   directives: { elDragDialog },
+  components: {
+    ImSelect
+  },
   data() {
     return {
       // 列表集合
@@ -176,8 +174,8 @@ export default {
       searchForm: {
         userName: '',
         userCode: '',
-        province: '',
-        city: ''
+        province: null,
+        city: null
       },
 
       // 列表默认展开的keys
@@ -211,16 +209,7 @@ export default {
       },
       addFormRules: {
 
-      },
-
-      // 下拉
-      // 一级
-      provinceList: [],
-      selectedProvince: '',
-      // 二级
-      cityList: [],
-      selectedCity: ''
-
+      }
     }
   },
 
@@ -242,23 +231,10 @@ export default {
         text,
         icon
       }
-    },
-    searchProvince() {
-      return this.searchForm.province
-    },
-    searchCity() {
-      return this.searchForm.city
-    }
-  },
-  watch: {
-    searchProvince(val) {
-      this.searchForm.city = ''
-      this.loadCityList()
     }
   },
   created() {
     this.load()
-    this.loadProcinceList()
   },
   methods: {
     // load the list.
@@ -398,21 +374,6 @@ export default {
             })
           })
         }
-      })
-    },
-
-    // 下拉，加载数据
-    loadProcinceList() {
-      commonAPI.Post('/common/province/list').then(res => {
-        this.provinceList = res.data
-      })
-    },
-    loadCityList() {
-      const param = {
-        pid: this.searchForm.province
-      }
-      commonAPI.Post('/common/city/list', param).then(res => {
-        this.cityList = res.data
       })
     }
   }

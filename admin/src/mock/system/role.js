@@ -84,7 +84,6 @@ function getRoleName(roleCode) {
 export default {
   getRoleList: params => {
     const data = JSON.parse(params.body) || {}
-    console.log(data)
     const roleName = data.roleName || ''
     const roleCode = data.roleCode || ''
     const currentPage = data.currentPage || 1
@@ -103,7 +102,6 @@ export default {
     tmpRoles = tmpRoles.filter((u, index) => {
       return index < currentPage * pageSize && index >= pageSize * (currentPage - 1)
     })
-    console.log(tmpRoles)
     return {
       total: total,
       roles: tmpRoles
@@ -127,8 +125,6 @@ export default {
 
   addUserRole: config => {
     const data = JSON.parse(config.body) || {}
-    console.log('add user role: ')
-    console.log(data)
     const roles = data.roles || []
     const id = data.id
     let match = false
@@ -144,7 +140,6 @@ export default {
         roles
       })
     }
-    console.log(userRoles)
   },
 
   editRole: params => {

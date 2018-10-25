@@ -29,17 +29,14 @@ export default {
     return provinceList
   },
   getCityList: config => {
-    console.log(config)
     const params = JSON.parse(config.body)
     if (params.pid) {
       const tmpList = cityList.filter(val => {
-        if (val.provinceId === params.pid) {
+        if (val.provinceId === parseInt(params.pid)) {
           return true
         }
         return false
       })
-      console.log('tpmList')
-      console.log(tmpList)
       return tmpList
     } else {
       return cityList

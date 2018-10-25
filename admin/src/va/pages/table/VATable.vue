@@ -142,7 +142,6 @@ export default {
       this.load()
     },
     load() {
-      console.log('load')
       API.list().then(res => {
         this.list = res.data.list
         this.total = res.data.total

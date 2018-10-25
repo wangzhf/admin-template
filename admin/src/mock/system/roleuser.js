@@ -44,9 +44,6 @@ export default {
 
       roleUserList.push(newRoleUser)
     }
-    console.log('after update role user: ')
-    console.log(userRoleList)
-    console.log(roleUserList)
     return userRoleList
   }
 }

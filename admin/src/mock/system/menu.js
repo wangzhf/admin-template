@@ -226,7 +226,7 @@ let menuList = [
         uri: '/table',
         path: '/table',
         icon: 'solid_table',
-        component: '/template/table/index2',
+        component: '/template/table/index',
         usable: 1,
         sort: 20,
         remarks: '',
@@ -271,7 +271,6 @@ export default {
   },
 
   getRoleMenuList: config => {
-    console.log('here ?')
     const data = JSON.parse(config.body) || {}
     const id = data.id
     const ret = {}
@@ -287,10 +286,7 @@ export default {
   },
 
   addRoleMenu: config => {
-    console.log('add role menu')
-    console.log(config)
     const data = JSON.parse(config.body) || {}
-    console.log(data)
     const menus = data.menus || []
     const id = data.id
     let match = false
@@ -306,8 +302,6 @@ export default {
         menus
       })
     }
-    console.log('after add: ')
-    console.log(menuList)
   }
 }
 

@@ -45,7 +45,7 @@ export default {
     tmpUsers = tmpUsers.filter((u, index) => {
       return index < currentPage * pageSize && index >= pageSize * (currentPage - 1)
     })
-    console.log(tmpUsers)
+    // console.log(tmpUsers)
     // return new Promise((resolve, reject) => {
     //   setTimeout(() => {
     //     console.log('hhha')

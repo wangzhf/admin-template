@@ -30,10 +30,6 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
-  },
-  created() {
-    console.log('permission_routers: ')
-    console.log(this.permission_routers)
   }
 }
 </script>

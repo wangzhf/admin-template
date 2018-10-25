@@ -133,10 +133,8 @@ export default {
     },
     multiSelectRole() {
       // 关闭多选
-      console.log(this.multiSelectRole)
       if (this.multiSelectRole) {
         const selectKeys = this.$refs.userTree.getCheckedKeys()
-        console.log(selectKeys)
         for (let i = 0; i < selectKeys.length; i++) {
           this.$refs.userTree.setChecked(selectKeys[i], false, true)
         }
@@ -227,9 +225,6 @@ export default {
         users: this.userSelectionList,
         roles: this.roleSelectionList
       }
-      console.log('params: ')
-      console.log(params)
-
       assignRole(params).then(res => {
         this.$message({
           type: 'success',

@@ -44,9 +44,6 @@ export default {
 
       roleResourceList.push(newRoleResource)
     }
-    console.log('after update role resource: ')
-    console.log(resourceRoleList)
-    console.log(roleResourceList)
     return resourceRoleList
   }
 }

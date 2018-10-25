@@ -7,7 +7,7 @@ console.log(template.defaults.rules)
 
 const filename = '/src/template/pages/Table.art'
 
-const data = {
+const tablePageConfig = {
   // 搜索
   searchArea: [
     {
@@ -103,7 +103,7 @@ const data = {
   ]
 }
 
-const ret = template(__dirname + filename, data)
+const ret = template(__dirname + filename, tablePageConfig)
 
 console.log(ret)
 

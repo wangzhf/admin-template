@@ -136,10 +136,8 @@ export default {
     },
     multiSelectRole() {
       // 关闭多选
-      console.log(this.multiSelectRole)
       if (this.multiSelectRole) {
         const selectKeys = this.$refs.resourceTree.getCheckedKeys()
-        console.log(selectKeys)
         for (let i = 0; i < selectKeys.length; i++) {
           this.$refs.resourceTree.setChecked(selectKeys[i], false, true)
         }
@@ -159,8 +157,6 @@ export default {
         pageSize: this.pageSize
       }
       listResource(params).then(res => {
-        console.log('get resource: ')
-        console.log(res)
         this.resourceList = res.data
         this.total = res.data.total
       })
@@ -232,9 +228,6 @@ export default {
         resources: this.resourceSelectionList,
         roles: this.roleSelectionList
       }
-      console.log('params: ')
-      console.log(params)
-
       assignRole(params).then(res => {
         this.$message({
           type: 'success',

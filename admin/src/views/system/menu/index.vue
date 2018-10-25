@@ -198,8 +198,6 @@ export default {
     },
     batchDelete() {
       var checkKeys = this.$refs.menuTree.getCheckedKeys()
-      console.log('check keys: ')
-      console.log(checkKeys)
       if (checkKeys == null || checkKeys.length <= 0) {
         this.$message.warning('请选择要删除的资源')
         return
@@ -221,7 +219,6 @@ export default {
             type: 'error',
             message: '操作失败'
           })
-          console.log(checkKeys)
           console.log(err)
         })
       })
@@ -267,7 +264,6 @@ export default {
     },
     load() {
       menuAPI.listMenu().then(res => {
-        console.log(res)
         this.menuTree = []
         this.menuTree.push(...res.data)
       })

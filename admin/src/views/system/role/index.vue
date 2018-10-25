@@ -203,7 +203,6 @@ export default {
         roleCode: this.roleInfo.roleCode
       }
       getRoleList(param).then((res) => {
-        console.log(res)
         this.roleList = res.data.roles
         this.total = res.data.total
       })
@@ -308,7 +307,6 @@ export default {
         id: row.id
       }
       listRoleMenus(param).then(res => {
-        console.log(res)
         this.menuTreeList = res.data.allMenus
         this.roleMenus = res.data.menus
         this.dialogVisible = true

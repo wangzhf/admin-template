@@ -31,14 +31,10 @@ router.beforeEach((to, from, next) => {
           //   router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
           //   next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
           // })
-          console.log('user info list: ')
-          console.log(res)
           const menus = {}
           for (let i = 0; i < res.data.menus.length; i++) {
             menus[res.data.menus[i].menuCode] = true
           }
-          console.log('menu keys: ')
-          console.log(menus)
           store.dispatch('GenerateRoutes', menus).then(() => {
             router.addRoutes(store.getters.addRouters)
             next({ ...to })

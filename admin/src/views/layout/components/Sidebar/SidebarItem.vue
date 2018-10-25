@@ -68,10 +68,6 @@ export default {
       onlyOneChild: null
     }
   },
-  created() {
-    // console.log('menu item: ')
-    // console.log(this.item)
-  },
   methods: {
     hasOneShowingChild(children, parent) {
       const showingChildren = children.filter(item => {
