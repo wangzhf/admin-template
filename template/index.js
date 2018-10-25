@@ -1,11 +1,12 @@
 const template = require('art-template')
+const fs = require('fs')
 
 // 移除以{{}} 匹配的规则，避免与vue冲突
 template.defaults.rules.splice(1, 1)
 
 console.log(template.defaults.rules)
 
-const filename = '/src/template/pages/Table.art'
+const filename = '/src/template/pages/Table2.art'
 
 const tablePageConfig = {
   // 搜索
@@ -23,14 +24,22 @@ const tablePageConfig = {
     {
       field: 'province',
       title: '省', 
-      type: 'select'
+      type: 'select',
+      url: '/common/province/list'
     }, 
     {
       field: 'city', 
       title: '市',
       type: 'select',
       // 级联配置
-      dependon: 'province'
+      dependon: 'province',
+      url: '/common/city/list'
+    }, 
+    {
+      field: 'menu',
+      title: '菜单',
+      type: 'selectTree',
+      url: '/menu/list'
     }
   ], 
   // table展示
@@ -58,6 +67,23 @@ const tablePageConfig = {
       title: '地址'
     }]
   }, 
+
+  action: [
+    {
+      name: 'assignRole',
+      title: '关联角色',
+      type: 'treeDialog',
+      url: '/user/role'
+    },{
+      name: 'edit',
+      title: '编辑',
+      type: 'editDialog'
+    },{
+      name: 'delete',
+      title: '删除',
+      type: 'deleteDialog'
+    }
+  ],
 
   edit: [
     {
@@ -104,7 +130,9 @@ const tablePageConfig = {
 }
 
 const ret = template(__dirname + filename, tablePageConfig)
-
-console.log(ret)
-
+const outDir = '/src/temp/'
+fs.writeFile(__dirname + outDir + 'Table.vue', ret, err => {
+  if (err) console.log('write file error.')
+  else console.log('write file success')
+})
 
