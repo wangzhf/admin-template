@@ -153,7 +153,7 @@ export default {
       border: 1px solid #d8dce5;
       color: #495060;
       background: #fff;
-      padding: 0 8px;
+      padding: 0 8px 0 20px;
       font-size: 12px;
       margin-left: $tagItemMargin;
       margin-top: 4px;
