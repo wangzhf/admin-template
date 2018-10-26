@@ -6,6 +6,7 @@
   "author": "wangzhf",
   "license": "MIT",
   "dependencies": {
-    "art-template": "^4.13.1"
+    "art-template": "^4.13.1",
+    "html-minifier": "^3.5.21"
   }
 }
