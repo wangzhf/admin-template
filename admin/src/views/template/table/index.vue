@@ -1,43 +1,53 @@
 <template>
   <div class="content-container">
-    <el-form ref="searchForm" :inline="true" label-width="80px">
-      <el-form-item label="用户姓名">
-        <el-input v-model.trim="searchForm.userName" />
-      </el-form-item>
-      <el-form-item label="用户代码">
-        <el-input v-model.trim="searchForm.userCode" />
-      </el-form-item>
-      <el-form-item label="省">
-        <im-select
-          url="/common/province/list"
-          @select-change="(val) => searchForm.province = val"
-        />
-      </el-form-item>
-      <el-form-item label="市">
-        <im-select
-          :dependon-value="searchForm.province + ''"
-          dependon-key="province"
-          url="/common/city/list"
-          @select-change="(val) => searchForm.city = val"
-        />
-      </el-form-item>
-
-      <el-form-item label="菜单">
-        <im-el-select-tree
-          url="/menu/list"
-          @select-change="(val) => searchForm.menuId = val"
-        />
-      </el-form-item>
-
-      <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-    </el-form>
     <el-row>
+      <el-form ref="searchForm" :inline="true" label-width="100px">
+        <el-col :span="8">
+          <el-form-item label="用户姓名">
+            <el-input v-model.trim="searchForm.userName" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="用户代码">
+            <el-input v-model.trim="searchForm.userCode" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="省">
+            <im-select
+              url="/common/province/list"
+              @select-change="(val) => searchForm.province = val"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="市">
+            <im-select
+              :dependon-value="searchForm.province + ''"
+              dependon-key="province"
+              url="/common/city/list"
+              @select-change="(val) => searchForm.city = val"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="菜单">
+            <im-el-select-tree
+              url="/menu/list"
+              @select-change="(val) => searchForm.menuId = val"
+            />
+          </el-form-item>
+        </el-col>
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+      </el-form>
+    </el-row>
+    <el-col :span="24">
       <el-button-group>
         <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
         <el-button :disabled="disabledBatchBtn" icon="el-icon-delete" type="primary" @click="batchDelete">批量删除</el-button>
         <el-button v-if="needExpand" :icon="expandBtn.icon" type="primary" @click="handleChildExpand">{{ expandBtn.text }}</el-button>
       </el-button-group>
-    </el-row>
+    </el-col>
 
     <el-table
       ref="multipleTable"
@@ -78,6 +88,8 @@
         <template slot-scope="scope">
           <el-button
             @click.stop="handleTreeDialog(scope.$index, scope.row)">关联角色</el-button>
+          <el-button
+            @click.stop="handleTableDialog(scope.$index, scope.row)">表格dialog</el-button>
           <el-button
             @click.stop="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button
@@ -161,7 +173,7 @@
       </div>
     </el-dialog>
 
-    <!-- 配置角色界面 -->
+    <!-- tree dialog -->
     <el-dialog v-el-drag-dialog :visible.sync="treeDialogVisible" :close-on-click-modal="false" title="配置用户角色">
       <im-tree
         ref="treeDialog"
@@ -175,6 +187,19 @@
         <el-button type="primary" @click="handleTreeDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- table dialog -->
+    <el-dialog v-el-drag-dialog :visible.sync="tableDialogVisible" :close-on-click-modal="false" title="用户列表">
+      <im-table
+        ref="tableDialog"
+        :should-loading="shouldLoading"
+        url="/user/userList"
+      />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click.native="tableDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleTableDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -184,6 +209,7 @@ import ImSelect from '@/components/Im/Select'
 import commonAPI from '@/api/common'
 import selectTree from '@/components/Im/SelectTree'
 import ImTree from '@/components/Im/Tree'
+import ImTable from '@/components/Im/Table'
 // import treeter from '@/components/Tree/treeter'
 
 // 定义请求链接地址
@@ -194,6 +220,7 @@ const BatchDeleteUrl = '/user/batchDelete'
 const SearchUrl = '/user/userList'
 // const listTreeDataUrl = '/user/role'
 const addTreeDataUrl = '/user/role/add'
+const addTableDataUrl = '/user/add'
 
 export default {
   name: 'Table',
@@ -201,7 +228,8 @@ export default {
   components: {
     ImSelect,
     'im-el-select-tree': selectTree,
-    ImTree
+    ImTree,
+    ImTable
   },
   data() {
     return {
@@ -260,10 +288,12 @@ export default {
       linkId: null,
       // treeDialog是否加载数据
       isTreeDialogLoading: false,
-      treeDialogQueryData: null
+      treeDialogQueryData: null,
 
-      // select tree
-
+      // table dialog
+      tableDialogVisible: false,
+      shouldLoading: false,
+      tableLinkId: null
     }
   },
 
@@ -297,10 +327,10 @@ export default {
     },
     load() {
       const params = {
-        currentPage: this.currentPage,
-        pageSize: this.pageSize,
         userName: this.searchForm.userName,
-        userCode: this.searchForm.userCode
+        userCode: this.searchForm.userCode,
+        currentPage: this.currentPage,
+        pageSize: this.pageSize
       }
       commonAPI.Post(SearchUrl, params).then(res => {
         this.list = res.data.list
@@ -458,6 +488,36 @@ export default {
         })
         this.treeDialogVisible = false
         this.linkId = null
+      })
+    },
+
+    // table dialog
+    handleTableDialog(index, row) {
+      this.tableLinkId = row.id
+      this.tableDialogVisible = true
+      this.shouldLoading = true
+    },
+    handleTableDialogConfirm() {
+      const selection = this.$refs.tableDialog.getSelection()
+      console.log(selection)
+      const params = {
+        id: this.tableLinkId,
+        keys: selection.map(item => {
+          return item.id
+        })
+      }
+      commonAPI.Post(addTableDataUrl, params).then(res => {
+        this.$message({
+          type: 'success',
+          message: '操作成功'
+        })
+        this.tableDialogVisible = false
+      }).catch(err => {
+        this.$message({
+          type: 'error',
+          message: '操作失败'
+        })
+        console.log(err)
       })
     }
   }
