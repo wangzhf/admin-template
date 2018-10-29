@@ -218,7 +218,7 @@ let menuList = [
     parentId: null,
     children: [
       {
-        id: 13,
+        id: 14,
         title: '表格样式',
         menuName: '表格样式',
         menuCode: 'table',
@@ -226,11 +226,25 @@ let menuList = [
         uri: '/table',
         path: '/table',
         icon: 'solid_table',
-        component: '/template/table/index',
+        component: '/template/table/index2',
         usable: 1,
         sort: 20,
         remarks: '',
-        parentId: 11
+        parentId: 13
+      }, {
+        id: 16,
+        title: '普通',
+        menuName: '普通',
+        menuCode: 'common',
+        type: 'menu',
+        uri: '/common',
+        path: '/common',
+        icon: 'solid_table',
+        component: '/template/common/index',
+        usable: 1,
+        sort: 20,
+        remarks: '',
+        parentId: 15
       }
     ]
   }

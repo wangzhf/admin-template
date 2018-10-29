@@ -7,6 +7,7 @@ import roleuserAPI from './system/roleuser'
 import roleresourceAPI from './system/roleresource'
 import menuAPI from './system/menu'
 import commonAPI from './common'
+import pageAPI from './template/page'
 
 Mock.setup({
   timeout: '350-600'
@@ -59,5 +60,8 @@ Mock.mock(/\/menu\/batchDelete/, 'post', menuAPI.batchDelete)
 // 其他
 Mock.mock(/\/common\/province\/list/, 'post', commonAPI.getProvinceList)
 Mock.mock(/\/common\/city\/list/, 'post', commonAPI.getCityList)
+
+// 模板相关
+Mock.mock(/\/template\/page\/user/, 'get', pageAPI.getPageConfig)
 
 export default Mock

@@ -112,6 +112,13 @@ const userMap = {
         method: 'GET',
         type: 'menu',
         uri: '/table'
+      },
+      {
+        menuCode: 'common',
+        menuName: '普通',
+        method: 'GET',
+        type: 'menu',
+        uri: '/common'
       }
     ]
   },
