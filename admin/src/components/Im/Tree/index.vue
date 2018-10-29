@@ -8,7 +8,7 @@
       <el-tree
         ref="tree"
         :data="treeDataList"
-        :props="treeProps"
+        :props="mergedKeyProps"
         :check-on-click-node="true"
         :default-checked-keys="defaultCheckedKeys"
         node-key="id"
@@ -29,14 +29,15 @@ export default {
       type: String,
       default: ''
     },
-    treeProps: {
+    keyProps: {
       type: Object,
-      default() {
-        return {
-          children: 'children',
-          label: 'name'
-        }
-      }
+      default: () => ({})
+      // {
+      //   return {
+      //     children: 'children',
+      //     label: 'name'
+      //   }
+      // }
     },
     queryData: {
       type: Object,
@@ -52,6 +53,10 @@ export default {
       selectedList: [],
       treeDataList: [],
       defaultCheckedKeys: [],
+      defaultKeyProps: {
+        children: 'children',
+        label: 'name'
+      },
       linkId: null
       // loading: this.isTreeDialogLoading
     }
@@ -63,6 +68,12 @@ export default {
         this.load()
       }
       return this.isTreeDialogLoading
+    },
+    mergedKeyProps() {
+      return {
+        ...this.defaultKeyProps,
+        ...this.keyProps
+      }
     }
   },
 

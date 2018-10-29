@@ -1,7 +1,7 @@
 <template>
   <el-select-tree
     :tree-data="treeDataList"
-    :prop-names="defaultProps"
+    :prop-names="mergedKeyProps"
     :default-expand-all="true"
     v-model="selectValue"
     clearable
@@ -24,22 +24,29 @@ export default {
       default: ''
     },
     // 显示属性
-    defaultProps: {
+    keyProps: {
       type: Object,
-      default() {
-        return {
-          children: 'children',
-          label: 'menuName',
-          id: 'id'
-        }
-      }
+      default: () => ({})
     }
-
   },
+
   data() {
     return {
       treeDataList: [],
-      selectValue: null
+      selectValue: null,
+      defaultKeyProps: {
+        children: 'children',
+        label: 'menuName',
+        id: 'id'
+      }
+    }
+  },
+  computed: {
+    mergedKeyProps() {
+      return {
+        ...this.defaultKeyProps,
+        ...this.keyProps
+      }
     }
   },
   watch: {

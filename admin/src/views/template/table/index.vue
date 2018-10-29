@@ -24,6 +24,7 @@
           <el-form-item label="市">
             <im-select
               :dependon-value="searchForm.province + ''"
+              :key-props="cityKeyProps"
               dependon-key="province"
               url="/common/city/list"
               @select-change="(val) => searchForm.city = val"
@@ -179,7 +180,7 @@
         ref="treeDialog"
         :query-data="treeDialogQueryData"
         :is-tree-dialog-loading="isTreeDialogLoading"
-        :tree-props="treeProps"
+        :key-props="treeProps"
         url="/user/role"
       />
       <span slot="footer" class="dialog-footer">
@@ -241,6 +242,10 @@ export default {
         province: null,
         city: null,
         menuId: null
+      },
+      // 关联下拉被依赖项参数(请求参数名)
+      cityKeyProps: {
+        pid: 'pid'
       },
 
       // 列表默认展开的keys

@@ -18,18 +18,19 @@ export default {
   props: {
     keyProps: {
       type: Object,
-      default() {
-        return {
-          // 唯一key
-          key: 'value',
-          // 显示
-          label: 'label',
-          // 需要获取的值
-          value: 'value',
-          // 依赖项参数名称, 用于请求加载
-          pid: 'pid'
-        }
-      }
+      default: () => ({})
+      // {
+      //   return {
+      //     // 唯一key
+      //     key: 'value',
+      //     // 显示
+      //     label: 'label',
+      //     // 需要获取的值
+      //     value: 'value',
+      //     // 依赖项参数名称, 用于请求加载
+      //     pid: 'pid'
+      //   }
+      // }
     },
     // 依赖的值，可依赖多个，用于级联
     dependonKey: {
@@ -50,7 +51,26 @@ export default {
   data() {
     return {
       selectedVal: '',
-      dataList: []
+      dataList: [],
+      defaultKeyProps: {
+        // 唯一key
+        key: 'value',
+        // 显示
+        label: 'label',
+        // 需要获取的值
+        value: 'value',
+        // 依赖项参数名称, 用于请求加载
+        pid: 'pid'
+      }
+    }
+  },
+
+  computed: {
+    mergedKeyProps() {
+      return {
+        ...this.defaultKeyProps,
+        ...this.keyProps
+      }
     }
   },
 
@@ -72,13 +92,13 @@ export default {
 
   methods: {
     getNodeKey(item) {
-      return item[this.keyProps.key]
+      return item[this.mergedKeyProps.key]
     },
     getNodeLabel(item) {
-      return item[this.keyProps.label]
+      return item[this.mergedKeyProps.label]
     },
     getNodeValue(item) {
-      return item[this.keyProps.value]
+      return item[this.mergedKeyProps.value]
     },
 
     handleSelectionChange(val) {
@@ -88,7 +108,7 @@ export default {
     load() {
       const params = {}
       if (this.dependonKey && this.dependonValue) {
-        params[this.keyProps.pid] = this.dependonValue
+        params[this.mergedKeyProps.pid] = this.dependonValue
       }
       commonAPI.Post(this.url, params).then(res => {
         this.dataList = res.data
