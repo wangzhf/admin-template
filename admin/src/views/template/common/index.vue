@@ -1,6 +1,6 @@
 <template>
   <div class="content-container">
-    <table-template v-if="pageType == 0" />
+    <table-template v-if="pageType == 0" :page-data="pageData" />
     <tree-template v-else-if="pageType == 1" />
     <error-template v-else />
   </div>
@@ -24,7 +24,8 @@ export default {
   data() {
     return {
       // 页面类型
-      pageType: null
+      pageType: null,
+      pageData: {}
     }
   },
 
@@ -36,7 +37,12 @@ export default {
     // 加载页面配置
     loadPageConfig() {
       commonAPI.Get('/template/page/user').then(res => {
+        console.log(res)
         this.pageType = res.data.pageType
+        this.pageData = res.data.pageData
+        console.log(this.$store.state.tagsView.visitedViews)
+        console.log(this.$route.path)
+        console.log(this.$route.params.type)
       }).catch(err => {
         console.log(err)
       })
