@@ -52,7 +52,7 @@
       @row-click="handleRowClick"
       @expand-change="handleRowChange"
     >
-      <% if (table.childColumns.length > 0) {  %>
+      <% if (table.childColumns && table.childColumns.length > 0) {  %>
       <el-table-column v-if="needExpand" type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="child-table-expand">
