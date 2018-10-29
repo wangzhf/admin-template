@@ -32,7 +32,6 @@
       :suffix-icon="iconClass"
       type="text"
       @focus="visible = true"
-      @click="handleIconClick"
       @mouseenter.native="inputHovering = true"
       @mouseleave.native="inputHovering = false"
     />
