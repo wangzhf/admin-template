@@ -194,6 +194,7 @@
       <im-table
         ref="tableDialog"
         :should-loading="shouldLoading"
+        :table-columns="tableDialogColumns"
         url="/user/userList"
       />
       <span slot="footer" class="dialog-footer">
@@ -298,7 +299,18 @@ export default {
       // table dialog
       tableDialogVisible: false,
       shouldLoading: false,
-      tableLinkId: null
+      tableLinkId: null,
+      // table dialog中column显示列
+      tableDialogColumns: [
+        {
+          propName: 'userName',
+          label: '姓名'
+        },
+        {
+          propName: 'userCode',
+          label: '代码'
+        }
+      ]
     }
   },
 

@@ -15,8 +15,7 @@
     >
       <el-table-column type="selection" width="55"/>
       <el-table-column type="index" label="序号" />
-      <el-table-column prop="userName" label="姓名" sortable />
-      <el-table-column prop="userCode" label="代码" sortable />
+      <el-table-column v-for="column in tableColumns" :key="column.propName" :prop="column.propName" :label="column.label" sortable />
     </el-table>
   </el-scrollbar>
 </template>
@@ -34,6 +33,10 @@ export default {
     shouldLoading: {
       type: Boolean,
       default: false
+    },
+    tableColumns: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
