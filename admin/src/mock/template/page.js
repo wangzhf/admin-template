@@ -37,8 +37,7 @@ const pageConfig = [{
       title: '菜单',
       type: 'selectTree',
       url: '/menu/list'
-    }
-    ],
+    }],
     // table展示
     table: {
       columns: [{
@@ -65,20 +64,42 @@ const pageConfig = [{
 
     // table行操作
     actions: [{
+      name: 'assignUser',
+      title: '关联用户',
+      type: 'tableDialog',
+      url: '',
+      dialog: {
+        title: '关联用户',
+        type: 'table',
+        queryData: {},
+        loading: false,
+        assignUserFormVisible: false,
+        columnProps: [{
+          propName: 'userName',
+          label: '姓名'
+        },
+        {
+          propName: 'userCode',
+          label: '代码'
+        }],
+        linkId: null
+      }
+    }, {
       name: 'assignRole',
       title: '关联角色',
       type: 'treeDialog',
       url: '/user/role',
       dialog: {
-        assignRoleFormVisible: false,
         title: '关联角色',
         type: 'tree',
         queryData: {},
         loading: false,
+        assignRoleFormVisible: false,
         keyProps: {
           children: 'children',
           label: 'roleName'
-        }
+        },
+        linkId: null
       }
     }, {
       name: 'add',
@@ -195,130 +216,7 @@ const pageConfig = [{
       dialog: {
 
       }
-    }],
-
-    // 对话框
-    dialogs: [
-      {
-        name: 'add',
-        title: '新增',
-        type: 'form',
-        addFormVisible: false,
-        addForm: {},
-        addFormRules: {
-          userName: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ]
-        },
-        columns: [{
-          field: 'userName',
-          title: '用户姓名',
-          type: 'input'
-        }, {
-          field: 'userCode',
-          title: '用户代码',
-          type: 'input'
-        }, {
-          field: 'sex',
-          title: '性别',
-          type: 'radio',
-          options: [
-            {
-              label: '男',
-              value: 1
-            }, {
-              label: '女',
-              value: 0
-            }
-          ]
-        }, {
-          field: 'age',
-          title: '年龄',
-          type: 'number',
-          option: {
-            min: 0,
-            max: 200
-          }
-        }, {
-          field: 'birthday',
-          title: '生日',
-          type: 'date'
-        }, {
-          field: 'address',
-          title: '地址',
-          type: 'textarea'
-        }]
-      },
-      {
-        name: 'edit',
-        title: '编辑',
-        editFormVisible: false,
-        editForm: {},
-        editFormRules: {
-          userName: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ]
-        },
-        type: 'form',
-        columns: [{
-          field: 'userName',
-          title: '用户姓名',
-          type: 'input'
-        }, {
-          field: 'userCode',
-          title: '用户代码',
-          type: 'input'
-        }, {
-          field: 'sex',
-          title: '性别',
-          type: 'radio',
-          options: [
-            {
-              label: '男',
-              value: 1
-            }, {
-              label: '女',
-              value: 0
-            }
-          ]
-        }, {
-          field: 'age',
-          title: '年龄',
-          type: 'number',
-          option: {
-            min: 0,
-            max: 200
-          }
-        }, {
-          field: 'birthday',
-          title: '生日',
-          type: 'date'
-        }, {
-          field: 'address',
-          title: '地址',
-          type: 'textarea'
-        }]
-      },
-      {
-        name: 'assignRole',
-        assignRoleFormVisible: false,
-        title: '关联角色',
-        type: 'tree',
-        queryData: {},
-        loading: false,
-        keyProps: {
-          children: 'children',
-          label: 'roleName'
-        }
-      },
-      {
-        name: 'userList',
-        title: '关联用户',
-        type: 'table'
-      }
-    ]
+    }]
   }
 }]
 

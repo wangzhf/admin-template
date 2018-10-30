@@ -75,19 +75,19 @@
         <template slot-scope="scope">
           <el-button
             v-if="hasAction('treeDialog')"
-            @click.stop="handleTreeDialog(scope.$index, scope.row)"
+            @click.stop="handleTreeDialog(scope.$index, scope.row, getAction('treeDialog').name)"
           >{{ getAction('treeDialog').title }}</el-button>
           <el-button
             v-if="hasAction('tableDialog')"
-            @click.stop="handleTableDialog(scope.$index, scope.row)"
+            @click.stop="handleTableDialog(scope.$index, scope.row, getAction('tableDialog').name)"
           >{{ getAction('tableDialog').title }}</el-button>
           <el-button
             v-if="hasAction('editDialog')"
-            @click.stop="handleEdit(scope.$index, scope.row)"
+            @click.stop="handleEdit(scope.$index, scope.row, getAction('editDialog').name)"
           >{{ getAction('editDialog').title }}</el-button>
           <el-button
             v-if="hasAction('deleteDialog')"
-            @click.stop="handleDelete(scope.$index, scope.row)"
+            @click.stop="handleDelete(scope.$index, scope.row, getAction('deleteDialog').name)"
           >{{ getAction('deleteDialog').title }}</el-button>
         </template>
       </el-table-column>
@@ -105,92 +105,97 @@
       />
     </div>
 
-    <div v-for="dialog in pageData.dialogs" :key="dialog.name">
+    <div v-for="action in pageData.actions" v-if="action.dialog" :key="action.name">
       <!-- form dialog -->
       <el-dialog
         v-el-drag-dialog
-        v-if="dialog.type == 'form'"
-        :visible.sync="dialog[dialog.name + 'FormVisible']"
+        v-if="action.dialog.type == 'form'"
+        :visible.sync="action.dialog[action.name + 'FormVisible']"
         :close-on-click-modal="false"
-        :title="dialog.title"
+        :title="action.dialog.title"
       >
         <el-form
-          v-if="dialog.columns && dialog.columns.length > 0"
-          :ref="dialog.name + 'Form'"
-          :model="dialog[dialog.name + 'Form']"
-          :rules="dialog[dialog.name + 'FormRules']"
+          v-if="action.dialog.columns && action.dialog.columns.length > 0"
+          :ref="action.name + 'Form'"
+          :model="action.dialog[action.name + 'Form']"
+          :rules="action.dialog[action.name + 'FormRules']"
           label-width="80px"
         >
-          <el-form-item v-for="item in dialog.columns" :key="item.field" :label="item.title" :prop="item.field">
+          <el-form-item v-for="item in action.dialog.columns" :key="item.field" :label="item.title" :prop="item.field">
             <el-input
               v-if="item.type == 'input'"
-              v-model="dialog[dialog.name + 'Form'][item.field]"
+              v-model="action.dialog[action.name + 'Form'][item.field]"
               auto-complete="off"
             />
-            <el-radio-group v-else-if="item.type == 'radio'" v-model="dialog[dialog.name + 'Form'][item.field]">
+            <el-radio-group v-else-if="item.type == 'radio'" v-model="action.dialog[action.name + 'Form'][item.field]">
               <el-radio v-for="option in item.options" :key="option.value" :label="option.value" class="radio">{{ option.label }}</el-radio>
             </el-radio-group>
             <el-input-number
               v-else-if="item.type == 'number'"
-              v-model="dialog[dialog.name + 'Form'][item.field]"
+              v-model="action.dialog[action.name + 'Form'][item.field]"
               :min="item.option.min"
               :max="item.option.max"
             />
             <el-date-picker
               v-else-if="item.type == 'date'"
-              v-model="dialog[dialog.name + 'Form'][item.field]"
+              v-model="action.dialog[action.name + 'Form'][item.field]"
               :type="item.type"
               placeholder="选择日期"
             />
             <el-input
               v-else-if="item.type == 'textarea'"
-              v-model="dialog[dialog.name + 'Form'].address"
+              v-model="action.dialog[action.name + 'Form'].address"
               type="textarea"
             />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="dialog[dialog.name + 'FormVisible'] = false">取消</el-button>
-          <el-button type="primary" @click.native="formDialogSubmit(dialog.name)">提交</el-button>
+          <el-button @click.native="action.dialog[action.name + 'FormVisible'] = false">取消</el-button>
+          <el-button type="primary" @click.native="formDialogSubmit(action.name)">提交</el-button>
         </div>
       </el-dialog>
 
       <!-- tree dialog -->
       <el-dialog
         v-el-drag-dialog
-        v-if="dialog.type == 'tree'"
-        :visible.sync="dialog[dialog.name + 'FormVisible']"
+        v-if="action.dialog.type == 'tree'"
+        :visible.sync="action.dialog[action.name + 'FormVisible']"
         :close-on-click-modal="false"
-        :title="dialog.title"
+        :title="action.dialog.title"
       >
         <im-tree
-          :ref="dialog.name + 'treeDialog'"
-          :query-data="dialog.queryData"
-          :is-tree-dialog-loading="dialog.loading"
-          :key-props="dialog.keyProps"
+          :ref="action.name + 'TreeDialog'"
+          :query-data="action.dialog.queryData"
+          :is-tree-dialog-loading="action.dialog.loading"
+          :key-props="action.dialog.keyProps"
           url="/user/role"
         />
         <span slot="footer" class="dialog-footer">
-          <el-button @click.native="dialog[dialog.name + 'FormVisible'] = false">取 消</el-button>
-          <el-button type="primary" @click="handleTreeDialogConfirm">确 定</el-button>
+          <el-button @click.native="action.dialog[action.name + 'FormVisible'] = false">取 消</el-button>
+          <el-button type="primary" @click="handleTreeDialogConfirm(action.name, action.name + 'TreeDialog')">确 定</el-button>
         </span>
       </el-dialog>
 
+      <!-- table dialog -->
+      <el-dialog
+        v-el-drag-dialog
+        v-if="action.dialog.type == 'table'"
+        :visible.sync="action.dialog[action.name + 'FormVisible']"
+        :close-on-click-modal="false"
+        :title="action.dialog.title"
+      >
+        <im-table
+          :ref="action.name + 'TableDialog'"
+          :should-loading="action.dialog.loading"
+          :table-columns="action.dialog.columnProps"
+          url="/user/userList"
+        />
+        <span slot="footer" class="dialog-footer">
+          <el-button @click.native="action.dialog[action.name + 'FormVisible'] = false">取 消</el-button>
+          <el-button type="primary" @click="handleTableDialogConfirm(action.name, action.name + 'TableDialog')">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
-
-    <!-- table dialog -->
-    <el-dialog v-el-drag-dialog :visible.sync="tableDialogVisible" :close-on-click-modal="false" title="用户列表">
-      <im-table
-        ref="tableDialog"
-        :should-loading="shouldLoading"
-        :table-columns="tableDialogColumns"
-        url="/user/userList"
-      />
-      <span slot="footer" class="dialog-footer">
-        <el-button @click.native="tableDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleTableDialogConfirm">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -240,10 +245,6 @@ export default {
         city: null,
         menuId: null
       },
-      // 关联下拉被依赖项参数(请求参数名)
-      cityKeyProps: {
-        pid: 'pid'
-      },
 
       // 列表默认展开的keys
       expandRowKeys: [],
@@ -258,34 +259,7 @@ export default {
       needExpand: this.pageData.table && this.pageData.table.childColumns && this.pageData.table.childColumns.length > 0,
 
       // 记录多选记录
-      multipleSelection: [],
-
-      // tree dialog
-      treeDialogVisible: false,
-      treeDataList: [],
-      treeProps: {
-        children: 'children',
-        label: 'roleName'
-      },
-      defaultCheckedKeys: [],
-      // 当前选中行ID
-      linkId: null,
-
-      // table dialog
-      tableDialogVisible: false,
-      shouldLoading: false,
-      tableLinkId: null,
-      // table dialog中column显示列
-      tableDialogColumns: [
-        {
-          propName: 'userName',
-          label: '姓名'
-        },
-        {
-          propName: 'userCode',
-          label: '代码'
-        }
-      ]
+      multipleSelection: []
     }
   },
 
@@ -336,21 +310,31 @@ export default {
       })
     },
     handleAdd() {
-      const data = this.pageData
-      data.dialogs.forEach(item => {
-        if (item.type === 'form' && item.name === 'add') {
-          item[item.name + 'FormVisible'] = true
-        }
-      })
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (dialog.type === 'form' && action.name === 'add') {
+              dialog[action.name + 'FormVisible'] = true
+            }
+          }
+        })
+      }
     },
-    handleEdit(index, row) {
-      const data = this.pageData
-      data.dialogs.forEach(item => {
-        if (item.type === 'form' && item.name === 'edit') {
-          item[item.name + 'Form'] = Object.assign({}, row)
-          item[item.name + 'FormVisible'] = true
-        }
-      })
+    handleEdit(index, row, type) {
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (dialog.type === 'form' && action.name === type) {
+              dialog[action.name + 'Form'] = Object.assign({}, row)
+              dialog[action.name + 'FormVisible'] = true
+            }
+          }
+        })
+      }
     },
     handleDelete(index, row) {
       this.$confirm('确认删除该记录吗？', '提示', {
@@ -430,87 +414,135 @@ export default {
       if (type === 'add') {
         requestUrl = AddUrl
       }
-      this.pageData.dialogs.forEach(item => {
-        if (item.type === 'form' && item.name === type) {
-          const form = item.name + 'Form'
-          this.$refs[form][0].validate(valid => {
-            if (valid) {
-              this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                const param = Object.assign({}, item[form])
-                commonAPI.Post(requestUrl, param).then(res => {
-                  this.$message({
-                    type: 'success',
-                    message: '操作成功'
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (dialog.type === 'form' && action.name === type) {
+              const form = action.name + 'Form'
+              this.$refs[form][0].validate(valid => {
+                if (valid) {
+                  this.$confirm('确认提交吗？', '提示', {}).then(() => {
+                    const param = Object.assign({}, dialog[form])
+                    commonAPI.Post(requestUrl, param).then(res => {
+                      this.$message({
+                        type: 'success',
+                        message: '操作成功'
+                      })
+                      this.$refs[form][0].resetFields()
+                      dialog[action.name + 'FormVisible'] = false
+                      this.load()
+                    })
+                  }).catch(() => {
+                    // cancel
                   })
-                  this.$refs[form][0].resetFields()
-                  item[item.name + 'FormVisible'] = false
-                  this.load()
-                })
-              }).catch(() => {
-                // cancel
+                }
               })
             }
-          })
-        }
-      })
+          }
+        })
+      }
     },
     // tree dialog 显示
-    handleTreeDialog(index, row) {
-      this.linkId = row.id
-      const param = {
-        id: row.id
+    handleTreeDialog(index, row, type) {
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (dialog.type === 'tree' && action.name === type) {
+              dialog.linkId = row.id
+              const param = {
+                id: row.id
+              }
+              dialog.queryData = param
+              dialog.loading = true
+              dialog[action.name + 'FormVisible'] = true
+            }
+          }
+        })
       }
-      this.treeDialogQueryData = param
-      this.isTreeDialogLoading = true
-      this.treeDialogVisible = true
     },
     // tree dialog 确认事件
-    handleTreeDialogConfirm() {
-      const checkedKeys = this.$refs.treeDialog.getSelection().map(item => {
+    handleTreeDialogConfirm(type, ref) {
+      const checkedKeys = this.$refs[ref][0].getSelection().map(item => {
         return item.id
       })
-      const params = {
-        id: this.linkId,
-        data: checkedKeys
-      }
-      commonAPI.Post(addTreeDataUrl, params).then(res => {
-        this.$message({
-          type: 'success',
-          message: '操作成功'
+
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (dialog.type === 'tree' && action.name === type) {
+              const params = {
+                id: dialog.linkId,
+                data: checkedKeys
+              }
+              commonAPI.Post(addTreeDataUrl, params).then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '操作成功'
+                })
+                dialog[action.name + 'FormVisible'] = false
+                dialog.linkId = null
+                dialog.loading = false
+              })
+            }
+          }
         })
-        this.treeDialogVisible = false
-        this.linkId = null
-      })
+      }
     },
 
     // table dialog
-    handleTableDialog(index, row) {
-      this.tableLinkId = row.id
-      this.tableDialogVisible = true
-      this.shouldLoading = true
-    },
-    handleTableDialogConfirm() {
-      const selection = this.$refs.tableDialog.getSelection()
-      console.log(selection)
-      const params = {
-        id: this.tableLinkId,
-        keys: selection.map(item => {
-          return item.id
+    handleTableDialog(index, row, type) {
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (dialog.type === 'table' && action.name === type) {
+              dialog.linkId = row.id
+              const param = {
+                id: row.id
+              }
+              dialog.queryData = param
+              dialog.loading = true
+              dialog[action.name + 'FormVisible'] = true
+            }
+          }
         })
       }
-      commonAPI.Post(addTableDataUrl, params).then(res => {
-        this.$message({
-          type: 'success',
-          message: '操作成功'
-        })
-        this.tableDialogVisible = false
-      }).catch(err => {
-        this.$message({
-          type: 'error',
-          message: '操作失败'
-        })
-        console.log(err)
+    },
+    handleTableDialogConfirm(type, ref) {
+      const checkedKeys = this.$refs[ref][0].getSelection().map(item => {
+        return item.id
       })
+
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (dialog.type === 'table' && action.name === type) {
+              const params = {
+                id: dialog.linkId,
+                data: checkedKeys
+              }
+              commonAPI.Post(addTableDataUrl, params).then(res => {
+                this.$message({
+                  type: 'success',
+                  message: '操作成功'
+                })
+                dialog[action.name + 'FormVisible'] = false
+                dialog.linkId = null
+                dialog.loading = false
+              })
+            }
+          }
+        })
+      }
     },
     hasAction(type) {
       const actions = this.pageData.actions
