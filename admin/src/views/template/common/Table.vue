@@ -73,22 +73,24 @@
       />
       <el-table-column v-if="pageData.actions && pageData.actions.length > 0" label="操作" >
         <template slot-scope="scope">
-          <el-button
-            v-if="hasAction('treeDialog')"
-            @click.stop="handleTreeDialog(scope.$index, scope.row, getAction('treeDialog').name)"
-          >{{ getAction('treeDialog').title }}</el-button>
-          <el-button
-            v-if="hasAction('tableDialog')"
-            @click.stop="handleTableDialog(scope.$index, scope.row, getAction('tableDialog').name)"
-          >{{ getAction('tableDialog').title }}</el-button>
-          <el-button
-            v-if="hasAction('editDialog')"
-            @click.stop="handleEdit(scope.$index, scope.row, getAction('editDialog').name)"
-          >{{ getAction('editDialog').title }}</el-button>
-          <el-button
-            v-if="hasAction('deleteDialog')"
-            @click.stop="handleDelete(scope.$index, scope.row, getAction('deleteDialog').name)"
-          >{{ getAction('deleteDialog').title }}</el-button>
+          <span v-for="action in pageData.actions" :key="action.name" style="padding-left: 5px;">
+            <el-button
+              v-if="action.type == 'treeDialog'"
+              @click.stop="handleTreeDialog(scope.$index, scope.row, action.name)"
+            >{{ action.title }}</el-button>
+            <el-button
+              v-else-if="action.type == 'tableDialog'"
+              @click.stop="handleTableDialog(scope.$index, scope.row, action.name)"
+            >{{ action.title }}</el-button>
+            <el-button
+              v-else-if="action.type == 'editDialog'"
+              @click.stop="handleEdit(scope.$index, scope.row, action.name)"
+            >{{ action.title }}</el-button>
+            <el-button
+              v-else-if="action.type == 'deleteDialog'"
+              @click.stop="handleDelete(scope.$index, scope.row, action.name)"
+            >{{ action.title }}</el-button>
+          </span>
         </template>
       </el-table-column>
     </el-table>
@@ -543,21 +545,6 @@ export default {
           }
         })
       }
-    },
-    hasAction(type) {
-      const actions = this.pageData.actions
-      return actions.some(item => {
-        return item.type === type
-      })
-    },
-    getAction(type) {
-      const actions = this.pageData.actions
-      for (let i = 0; i < actions.length; i++) {
-        if (actions[i].type === type) {
-          return actions[i]
-        }
-      }
-      return null
     }
   }
 }
