@@ -2,7 +2,7 @@
   <div class="content-container">
     <table-template v-if="pageType == 0" :page-data="pageData" />
     <tree-template v-else-if="pageType == 1" />
-    <error-template v-else />
+    <!-- <error-template v-else /> -->
   </div>
 </template>
 
@@ -36,16 +36,24 @@ export default {
   methods: {
     // 加载页面配置
     loadPageConfig() {
-      commonAPI.Get('/template/page/user').then(res => {
+      const pageType = this.getPageType()
+      const params = {
+        pageType
+      }
+      commonAPI.Get('/template/page/user', params).then(res => {
         console.log(res)
         this.pageType = res.data.pageType
         this.pageData = res.data.pageData
         console.log(this.$store.state.tagsView.visitedViews)
         console.log(this.$route.path)
-        console.log(this.$route.params.type)
       }).catch(err => {
         console.log(err)
       })
+    },
+    getPageType() {
+      const path = this.$route.path
+      const arr = path.split('/')
+      return arr[arr.length - 1]
     }
   }
 }

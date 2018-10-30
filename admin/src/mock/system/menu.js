@@ -233,12 +233,12 @@ let menuList = [
         parentId: 13
       }, {
         id: 16,
-        title: '普通',
-        menuName: '普通',
-        menuCode: 'common',
+        title: '用户表',
+        menuName: '用户表',
+        menuCode: 'userTable',
         type: 'menu',
-        uri: '/common',
-        path: '/common',
+        uri: '/common/user-table',
+        path: '/common/user-table',
         icon: 'solid_table',
         component: '/template/common/index',
         usable: 1,

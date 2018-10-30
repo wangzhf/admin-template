@@ -1,38 +1,38 @@
 <template>
   <div class="content-container">
-    <el-form ref="searchForm" :inline="true" label-width="80px">
-      <el-form-item label="用户代码">
-        <el-input v-model.trim="searchForm.userCode" />
-      </el-form-item>
-      <el-form-item label="省">
-        <im-select
-          url="/common/province/list"
-          @select-change="(val) => searchForm.province = val"
-        />
-      </el-form-item>
-      <el-form-item label="市">
-        <im-select
-          :dependon-value="searchForm.province + ''"
-          dependon-key="province"
-          url="/common/city/list"
-          @select-change="(val) => searchForm.city = val"
-        />
-      </el-form-item>
-      <el-form-item label="菜单">
-        <im-el-select-tree
-          url="/menu/list"
-          @select-change="(val) => searchForm.menu = val"
-        />
-      </el-form-item>
-      <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
-    </el-form>
     <el-row>
+      <el-form v-if="pageData && pageData.searchArea && pageData.searchArea.length > 0" ref="searchForm" :inline="true" label-width="100px">
+        <el-col v-for="searchItem in pageData.searchArea" :key="searchItem.field" :span="8">
+          <el-form-item :label="searchItem.title">
+            <el-input v-if="searchItem.type == 'input'" v-model.trim="searchForm[searchItem.field]" clearable />
+
+            <im-select
+              v-if="searchItem.type == 'select'"
+              :dependon-value="searchItem.dependon ? searchForm[searchItem.dependon] + '' : ''"
+              :dependon-key="searchItem.dependon ? searchItem.dependon : ''"
+              :key-props="searchItem.dependon ? searchItem.keyProps : null"
+              :url="searchItem.url"
+              @select-change="(val) => searchForm[searchItem.field] = val"
+            />
+
+            <im-el-select-tree
+              v-if="searchItem.type == 'selectTree'"
+              :url="searchItem.url"
+              @select-change="(val) => searchForm[searchItem.field] = val"
+            />
+          </el-form-item>
+        </el-col>
+        <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+      </el-form>
+    </el-row>
+    <el-col :span="24">
       <el-button-group>
         <el-button icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
         <el-button :disabled="disabledBatchBtn" icon="el-icon-delete" type="primary" @click="batchDelete">批量删除</el-button>
         <el-button v-if="needExpand" :icon="expandBtn.icon" type="primary" @click="handleChildExpand">{{ expandBtn.text }}</el-button>
       </el-button-group>
-    </el-row>
+    </el-col>
+
     <el-table
       ref="multipleTable"
       :data="list"
@@ -49,34 +49,46 @@
       <el-table-column v-if="needExpand" type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="child-table-expand">
-            <el-form-item :span="childColumnWidth" label="性别">
-              <span v-text="props.row.sex" />
-            </el-form-item>
-            <el-form-item :span="childColumnWidth" label="年龄">
-              <span v-text="props.row.age" />
-            </el-form-item>
-            <el-form-item :span="childColumnWidth" label="生日">
-              <span v-text="props.row.birthday" />
-            </el-form-item>
-            <el-form-item :span="childColumnWidth" label="地址">
-              <span v-text="props.row.address" />
+            <!-- 遍历显示子列 -->
+            <el-form-item
+              v-for="childColumn in pageData.table.childColumns"
+              :key="childColumn.field"
+              :span="childColumnWidth"
+              :label="childColumn.title"
+            >
+              <span v-text="props.row[childColumn.field]" />
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
       <el-table-column type="selection" align="center" />
       <el-table-column type="index" label="序号" />
-      <el-table-column prop="userName" label="用户姓名" sortable />
-      <el-table-column prop="userCode" label="用户代码" sortable />
-      <el-table-column label="操作" >
+      <!-- 遍历显示普通列 -->
+      <el-table-column
+        v-for="column in pageData.table.columns"
+        :key="column.field"
+        :prop="column.field"
+        :label="column.title"
+        sortable
+      />
+      <el-table-column v-if="pageData.actions && pageData.actions.length > 0" label="操作" >
         <template slot-scope="scope">
           <el-button
-            @click.stop="handleTreeDialog(scope.$index, scope.row)">关联角色</el-button>
+            v-if="hasAction('treeDialog')"
+            @click.stop="handleTreeDialog(scope.$index, scope.row)"
+          >{{ getAction('treeDialog').title }}</el-button>
           <el-button
-            @click.stop="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            v-if="hasAction('tableDialog')"
+            @click.stop="handleTableDialog(scope.$index, scope.row)"
+          >{{ getAction('tableDialog').title }}</el-button>
           <el-button
-            type="danger"
-            @click.stop="handleDelete(scope.$index, scope.row)">删除</el-button>
+            v-if="hasAction('editDialog')"
+            @click.stop="handleEdit(scope.$index, scope.row)"
+          >{{ getAction('editDialog').title }}</el-button>
+          <el-button
+            v-if="hasAction('deleteDialog')"
+            @click.stop="handleDelete(scope.$index, scope.row)"
+          >{{ getAction('deleteDialog').title }}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,53 +104,77 @@
         @current-change="handleCurrentChange"
       />
     </div>
+
     <!--编辑界面-->
-    <el-dialog v-el-drag-dialog :visible.sync="editFormVisible" :close-on-click-modal="false" title="编辑">
-      <el-form ref="editForm" :model="editForm" :rules="editFormRules" label-width="80px">
-        <el-form-item label="用户姓名">
-          <el-input v-model="editForm.userName" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="用户代码">
-          <el-input v-model="editForm.userCode" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-input v-model="editForm.sex" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="editForm.age" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="生日">
-          <el-input v-model="editForm.birthday" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="editForm.address" auto-complete="off" />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click.native="editFormVisible = false">取消</el-button>
-        <el-button type="primary" @click.native="editSubmit">提交</el-button>
-      </div>
-    </el-dialog>
+    <div v-for="dialog in pageData.dialogs" :key="dialog.name">
+      <el-dialog v-el-drag-dialog :visible.sync="editFormVisible" :close-on-click-modal="false" title="编辑">
+        <el-form v-if="pageData.edit && pageData.edit.length > 0" ref="editForm" :model="editForm" :rules="editFormRules" label-width="80px">
+          <el-form-item v-for="item in pageData.edit" :key="item.field" :label="item.title">
+            <el-input
+              v-if="item.type == 'input'"
+              v-model="editForm[item.field]"
+              auto-complete="off"
+            />
+            <el-radio-group v-else-if="item.type == 'radio'" v-model="editForm[item.field]">
+              <el-radio v-for="option in item.options" :key="option.value" :label="option.value" class="radio">{{ option.label }}</el-radio>
+              <el-radio :label="0" class="radio">女</el-radio>
+            </el-radio-group>
+            <el-input-number
+              v-else-if="item.type == 'number'"
+              v-model="editForm[item.field]"
+              :min="item.option.min"
+              :max="item.option.max"
+            />
+            <el-date-picker
+              v-else-if="item.type == 'date'"
+              v-model="editForm[item.field]"
+              :type="item.type"
+              placeholder="选择日期"
+            />
+            <el-input
+              v-else-if="item.type == 'textarea'"
+              v-model="editForm.address"
+              type="textarea"
+            />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click.native="editFormVisible = false">取消</el-button>
+          <el-button type="primary" @click.native="editSubmit">提交</el-button>
+        </div>
+      </el-dialog>
+    </div>
+
     <!--新增界面-->
     <el-dialog v-el-drag-dialog :visible.sync="addFormVisible" :close-on-click-modal="false" title="新增">
-      <el-form ref="addForm" :model="addForm" :rules="addFormRules" label-width="80px">
-        <el-form-item label="用户姓名">
-          <el-input v-model="addForm.userName" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="用户代码">
-          <el-input v-model="addForm.userCode" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-input v-model="addForm.sex" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="年龄">
-          <el-input v-model="addForm.age" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="生日">
-          <el-input v-model="addForm.birthday" auto-complete="off" />
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="addForm.address" auto-complete="off" />
+      <el-form v-if="pageData.add && pageData.add.length > 0" ref="addForm" :model="addForm" :rules="addFormRules" label-width="80px">
+        <el-form-item v-for="item in pageData.add" :key="item.field" :label="item.title">
+          <el-input
+            v-if="item.type == 'input'"
+            v-model="addForm[item.field]"
+            auto-complete="off"
+          />
+          <el-radio-group v-else-if="item.type == 'radio'" v-model="addForm[item.field]">
+            <el-radio v-for="option in item.options" :key="option.value" :label="option.value" class="radio">{{ option.label }}</el-radio>
+            <el-radio :label="0" class="radio">女</el-radio>
+          </el-radio-group>
+          <el-input-number
+            v-else-if="item.type == 'number'"
+            v-model="addForm[item.field]"
+            :min="item.option.min"
+            :max="item.option.max"
+          />
+          <el-date-picker
+            v-else-if="item.type == 'date'"
+            v-model="addForm[item.field]"
+            :type="item.type"
+            placeholder="选择日期"
+          />
+          <el-input
+            v-else-if="item.type == 'textarea'"
+            v-model="addForm.address"
+            type="textarea"
+          />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -146,13 +182,14 @@
         <el-button type="primary" @click.native="addSubmit">提交</el-button>
       </div>
     </el-dialog>
-    <!-- 配置角色界面 -->
+
+    <!-- tree dialog -->
     <el-dialog v-el-drag-dialog :visible.sync="treeDialogVisible" :close-on-click-modal="false" title="配置用户角色">
       <im-tree
         ref="treeDialog"
         :query-data="treeDialogQueryData"
         :is-tree-dialog-loading="isTreeDialogLoading"
-        :tree-props="treeProps"
+        :key-props="treeProps"
         url="/user/role"
       />
       <span slot="footer" class="dialog-footer">
@@ -160,15 +197,32 @@
         <el-button type="primary" @click="handleTreeDialogConfirm">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- table dialog -->
+    <el-dialog v-el-drag-dialog :visible.sync="tableDialogVisible" :close-on-click-modal="false" title="用户列表">
+      <im-table
+        ref="tableDialog"
+        :should-loading="shouldLoading"
+        :table-columns="tableDialogColumns"
+        url="/user/userList"
+      />
+      <span slot="footer" class="dialog-footer">
+        <el-button @click.native="tableDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleTableDialogConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
+
 <script>
 import elDragDialog from '@/directive/el-dragDialog' // base on element-ui
 import ImSelect from '@/components/Im/Select'
 import commonAPI from '@/api/common'
 import selectTree from '@/components/Im/SelectTree'
 import ImTree from '@/components/Im/Tree'
+import ImTable from '@/components/Im/Table'
 // import treeter from '@/components/Tree/treeter'
+
 // 定义请求链接地址
 const AddUrl = '/user/add'
 const UpdateUrl = '/user/edit'
@@ -177,13 +231,23 @@ const BatchDeleteUrl = '/user/batchDelete'
 const SearchUrl = '/user/userList'
 // const listTreeDataUrl = '/user/role'
 const addTreeDataUrl = '/user/role/add'
+const addTableDataUrl = '/user/add'
+
 export default {
   name: 'Table',
   directives: { elDragDialog },
   components: {
     ImSelect,
     'im-el-select-tree': selectTree,
-    ImTree
+    ImTree,
+    ImTable
+  },
+  props: {
+    // 页面配置数据
+    pageData: {
+      type: Object,
+      default: () => ({})
+    }
   },
   data() {
     return {
@@ -196,29 +260,44 @@ export default {
         city: null,
         menuId: null
       },
+      // 关联下拉被依赖项参数(请求参数名)
+      cityKeyProps: {
+        pid: 'pid'
+      },
+
       // 列表默认展开的keys
       expandRowKeys: [],
       childColumnWidth: 4,
+
       // 分页
       total: 0,
       currentPage: 1,
       pageSize: 10,
+
       // 是否需要子表格
-      needExpand: true,
+      needExpand: this.pageData.table && this.pageData.table.childColumns && this.pageData.table.childColumns.length > 0,
+
       // 记录多选记录
       multipleSelection: [],
+
       // 编辑界面
       editFormVisible: false,
       editForm: {
+
       },
       editFormRules: {
+
       },
+
       // 新增界面
       addFormVisible: false,
       addForm: {
+
       },
       addFormRules: {
+
       },
+
       // tree dialog
       treeDialogVisible: false,
       treeDataList: [],
@@ -231,10 +310,26 @@ export default {
       linkId: null,
       // treeDialog是否加载数据
       isTreeDialogLoading: false,
-      treeDialogQueryData: null
-      // select tree
+      treeDialogQueryData: null,
+
+      // table dialog
+      tableDialogVisible: false,
+      shouldLoading: false,
+      tableLinkId: null,
+      // table dialog中column显示列
+      tableDialogColumns: [
+        {
+          propName: 'userName',
+          label: '姓名'
+        },
+        {
+          propName: 'userCode',
+          label: '代码'
+        }
+      ]
     }
   },
+
   computed: {
     disabledBatchBtn() {
       return this.multipleSelection.length === 0
@@ -255,6 +350,10 @@ export default {
       }
     }
   },
+  mounted() {
+    console.log('mounted: ')
+    console.log(this.pageData)
+  },
   created() {
     this.load()
   },
@@ -265,10 +364,10 @@ export default {
     },
     load() {
       const params = {
-        currentPage: this.currentPage,
-        pageSize: this.pageSize,
         userName: this.searchForm.userName,
-        userCode: this.searchForm.userCode
+        userCode: this.searchForm.userCode,
+        currentPage: this.currentPage,
+        pageSize: this.pageSize
       }
       commonAPI.Post(SearchUrl, params).then(res => {
         this.list = res.data.list
@@ -285,7 +384,6 @@ export default {
       this.addFormVisible = true
     },
     handleEdit(index, row) {
-      console.log(this)
       this.editForm = Object.assign({}, row)
       this.editFormVisible = true
     },
@@ -321,6 +419,7 @@ export default {
         // ... cancel
       })
     },
+
     // other event
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -427,10 +526,56 @@ export default {
         this.treeDialogVisible = false
         this.linkId = null
       })
+    },
+
+    // table dialog
+    handleTableDialog(index, row) {
+      this.tableLinkId = row.id
+      this.tableDialogVisible = true
+      this.shouldLoading = true
+    },
+    handleTableDialogConfirm() {
+      const selection = this.$refs.tableDialog.getSelection()
+      console.log(selection)
+      const params = {
+        id: this.tableLinkId,
+        keys: selection.map(item => {
+          return item.id
+        })
+      }
+      commonAPI.Post(addTableDataUrl, params).then(res => {
+        this.$message({
+          type: 'success',
+          message: '操作成功'
+        })
+        this.tableDialogVisible = false
+      }).catch(err => {
+        this.$message({
+          type: 'error',
+          message: '操作失败'
+        })
+        console.log(err)
+      })
+    },
+    hasAction(type) {
+      const actions = this.pageData.actions
+      return actions.some(item => {
+        return item.type === type
+      })
+    },
+    getAction(type) {
+      const actions = this.pageData.actions
+      for (let i = 0; i < actions.length; i++) {
+        if (actions[i].type === type) {
+          return actions[i]
+        }
+      }
+      return null
     }
   }
 }
 </script>
+
 <style lang="scss" scoped>
 .tab-container{
   margin-top: 20px;
@@ -440,6 +585,7 @@ export default {
   margin-top: 10px;
   margin-bottom: 30px;
   height: 100px;
+
 }
 .child-table-expand {
   font-size: 0;
