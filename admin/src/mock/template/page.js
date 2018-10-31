@@ -62,7 +62,7 @@ const pageConfig = [{
       }]
     },
 
-    // table行操作
+    // 操作
     actions: [{
       name: 'assignUser',
       title: '关联用户',
@@ -77,7 +77,7 @@ const pageConfig = [{
         type: 'table',
         queryData: {},
         loading: false,
-        assignUserFormVisible: false,
+        visible: false,
         columnProps: [{
           propName: 'userName',
           label: '姓名'
@@ -102,7 +102,7 @@ const pageConfig = [{
         type: 'tree',
         queryData: {},
         loading: false,
-        assignRoleFormVisible: false,
+        visible: false,
         keyProps: {
           children: 'children',
           label: 'roleName'
@@ -119,9 +119,9 @@ const pageConfig = [{
       place: 'tableCell',
       dialog: {
         title: '编辑',
-        editFormVisible: false,
-        editForm: {},
-        editFormRules: {
+        visible: false,
+        formData: {},
+        formRules: {
           userName: [
             { required: true, message: '请输入活动名称', trigger: 'blur' },
             { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
@@ -189,9 +189,9 @@ const pageConfig = [{
       dialog: {
         title: '新增',
         type: 'form',
-        addFormVisible: false,
-        addForm: {},
-        addFormRules: {
+        visible: false,
+        formData: {},
+        formRules: {
           userName: [
             { required: true, message: '请输入活动名称', trigger: 'blur' },
             { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
@@ -252,8 +252,6 @@ const pageConfig = [{
 
 export default {
   getPageConfig: config => {
-    console.log('get the request: ')
-    console.log(config)
     return pageConfig[0]
   }
 }

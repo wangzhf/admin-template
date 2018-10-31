@@ -74,16 +74,17 @@
         </template>
       </el-table-column>
       <el-table-column type="selection" align="center" />
-      <el-table-column type="index" label="序号" />
+      <el-table-column type="index" align="center" label="序号" />
       <!-- 遍历显示普通列 -->
       <el-table-column
         v-for="column in pageData.table.columns"
         :key="column.field"
         :prop="column.field"
         :label="column.title"
+        header-align="center"
         sortable
       />
-      <el-table-column v-if="pageData.actions && pageData.actions.length > 0" label="操作" >
+      <el-table-column v-if="pageData.actions && pageData.actions.length > 0" align="center" label="操作" >
         <template slot-scope="scope">
           <span v-for="action in pageData.actions" v-if="action.place == 'tableCell'" :key="action.name" style="padding-left: 5px;">
             <el-button
@@ -136,47 +137,47 @@
       <el-dialog
         v-el-drag-dialog
         v-if="action.dialog.type == 'form'"
-        :visible.sync="action.dialog[action.name + 'FormVisible']"
+        :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
       >
         <el-form
           v-if="action.dialog.columns && action.dialog.columns.length > 0"
           :ref="action.name + 'Form'"
-          :model="action.dialog[action.name + 'Form']"
-          :rules="action.dialog[action.name + 'FormRules']"
+          :model="action.dialog.formData"
+          :rules="action.dialog.formRules"
           label-width="80px"
         >
           <el-form-item v-for="item in action.dialog.columns" :key="item.field" :label="item.title" :prop="item.field">
             <el-input
               v-if="item.type == 'input'"
-              v-model="action.dialog[action.name + 'Form'][item.field]"
+              v-model="action.dialog.formData[item.field]"
               auto-complete="off"
             />
-            <el-radio-group v-else-if="item.type == 'radio'" v-model="action.dialog[action.name + 'Form'][item.field]">
+            <el-radio-group v-else-if="item.type == 'radio'" v-model="action.dialog.formData[item.field]">
               <el-radio v-for="option in item.options" :key="option.value" :label="option.value" class="radio">{{ option.label }}</el-radio>
             </el-radio-group>
             <el-input-number
               v-else-if="item.type == 'number'"
-              v-model="action.dialog[action.name + 'Form'][item.field]"
+              v-model="action.dialog.formData[item.field]"
               :min="item.option.min"
               :max="item.option.max"
             />
             <el-date-picker
               v-else-if="item.type == 'date'"
-              v-model="action.dialog[action.name + 'Form'][item.field]"
+              v-model="action.dialog.formData[item.field]"
               :type="item.type"
               placeholder="选择日期"
             />
             <el-input
               v-else-if="item.type == 'textarea'"
-              v-model="action.dialog[action.name + 'Form'].address"
+              v-model="action.dialog.formData[item.field]"
               type="textarea"
             />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="action.dialog[action.name + 'FormVisible'] = false">取消</el-button>
+          <el-button @click.native="action.dialog.visible = false">取消</el-button>
           <el-button type="primary" @click.native="formDialogSubmit(action.name)">提交</el-button>
         </div>
       </el-dialog>
@@ -185,7 +186,7 @@
       <el-dialog
         v-el-drag-dialog
         v-if="action.dialog.type == 'tree'"
-        :visible.sync="action.dialog[action.name + 'FormVisible']"
+        :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
       >
@@ -197,7 +198,7 @@
           url="/user/role"
         />
         <span slot="footer" class="dialog-footer">
-          <el-button @click.native="action.dialog[action.name + 'FormVisible'] = false">取 消</el-button>
+          <el-button @click.native="action.dialog.visible = false">取 消</el-button>
           <el-button type="primary" @click="handleTreeDialogConfirm(action.name, action.name + 'TreeDialog')">确 定</el-button>
         </span>
       </el-dialog>
@@ -206,7 +207,7 @@
       <el-dialog
         v-el-drag-dialog
         v-if="action.dialog.type == 'table'"
-        :visible.sync="action.dialog[action.name + 'FormVisible']"
+        :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
       >
@@ -217,7 +218,7 @@
           url="/user/userList"
         />
         <span slot="footer" class="dialog-footer">
-          <el-button @click.native="action.dialog[action.name + 'FormVisible'] = false">取 消</el-button>
+          <el-button @click.native="action.dialog.visible = false">取 消</el-button>
           <el-button type="primary" @click="handleTableDialogConfirm(action.name, action.name + 'TableDialog')">确 定</el-button>
         </span>
       </el-dialog>
@@ -264,13 +265,7 @@ export default {
     return {
       // 列表集合
       list: [],
-      searchForm: {
-        userName: '',
-        userCode: '',
-        province: null,
-        city: null,
-        menuId: null
-      },
+      searchForm: {},
 
       // 列表默认展开的keys
       expandRowKeys: [],
@@ -319,8 +314,7 @@ export default {
     },
     load() {
       const params = {
-        userName: this.searchForm.userName,
-        userCode: this.searchForm.userCode,
+        ...this.searchForm,
         currentPage: this.currentPage,
         pageSize: this.pageSize
       }
@@ -342,7 +336,7 @@ export default {
           const dialog = action.dialog
           if (dialog && dialog.title) {
             if (dialog.type === 'form' && action.name === 'add') {
-              dialog[action.name + 'FormVisible'] = true
+              dialog.visible = true
             }
           }
         })
@@ -355,8 +349,8 @@ export default {
           const dialog = action.dialog
           if (dialog && dialog.title) {
             if (dialog.type === 'form' && action.name === type) {
-              dialog[action.name + 'Form'] = Object.assign({}, row)
-              dialog[action.name + 'FormVisible'] = true
+              dialog.formData = Object.assign({}, row)
+              dialog.visible = true
             }
           }
         })
@@ -450,14 +444,14 @@ export default {
               this.$refs[form][0].validate(valid => {
                 if (valid) {
                   this.$confirm('确认提交吗？', '提示', {}).then(() => {
-                    const param = Object.assign({}, dialog[form])
+                    const param = Object.assign({}, dialog.formData)
                     commonAPI.Post(requestUrl, param).then(res => {
                       this.$message({
                         type: 'success',
                         message: '操作成功'
                       })
                       this.$refs[form][0].resetFields()
-                      dialog[action.name + 'FormVisible'] = false
+                      dialog.visible = false
                       this.load()
                     })
                   }).catch(() => {
@@ -484,7 +478,7 @@ export default {
               }
               dialog.queryData = param
               dialog.loading = true
-              dialog[action.name + 'FormVisible'] = true
+              dialog.visible = true
             }
           }
         })
@@ -511,7 +505,7 @@ export default {
                   type: 'success',
                   message: '操作成功'
                 })
-                dialog[action.name + 'FormVisible'] = false
+                dialog.visible = false
                 dialog.linkId = null
                 dialog.loading = false
               })
@@ -535,7 +529,7 @@ export default {
               }
               dialog.queryData = param
               dialog.loading = true
-              dialog[action.name + 'FormVisible'] = true
+              dialog.visible = true
             }
           }
         })
@@ -561,7 +555,7 @@ export default {
                   type: 'success',
                   message: '操作成功'
                 })
-                dialog[action.name + 'FormVisible'] = false
+                dialog.visible = false
                 dialog.linkId = null
                 dialog.loading = false
               })
