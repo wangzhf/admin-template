@@ -19,6 +19,7 @@
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
 import Logo from '../Logo'
+import _ from 'lodash'
 
 export default {
   components: { SidebarItem, Logo },
@@ -29,6 +30,31 @@ export default {
     ]),
     isCollapse() {
       return !this.sidebar.opened
+    }
+  },
+  created() {
+    // 如果是后端配置的路由，前端并未配置国际化内容，所以需要根据菜单的menuCode生成
+    const messages = this.$i18n.messages
+    this.handleRouter(this.permission_routers, messages)
+    // refer: https://kazupon.github.io/vue-i18n/api/#methods
+    this.$i18n.mergeLocaleMessage('zh', messages.zh)
+    this.$i18n.mergeLocaleMessage('en', messages.en)
+  },
+  methods: {
+    handleRouter(routers, messages) {
+      routers.forEach(item => {
+        const name = item.name
+        const title = item.meta ? item.meta.title : null
+        if (name && title && !messages.en.route[title]) {
+          messages.en.route[title] = _.startCase(title)
+          messages.zh.route[title] = name
+          console.log(messages.en.route[title])
+          console.log(messages.zh.route[title])
+        }
+        if (item.children && item.children.length > 0) {
+          this.handleRouter(item.children, messages)
+        }
+      })
     }
   }
 }

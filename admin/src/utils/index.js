@@ -300,25 +300,3 @@ export function uniqueArr(arr) {
 export function isExternal(path) {
   return /^(https?:|mailto:|tel:)/.test(path)
 }
-
-/**
- * 首字符大写
- * @param {*} letter
- */
-export function upperFirstLetter(letter) {
-  if (!letter) {
-    return ''
-  }
-  return letter.substring(0, 1).toUpperCase() + letter.substring(1)
-}
-
-/**
- * 首字符小写
- * @param {*} letter
- */
-export function lowerFistLetter(letter) {
-  if (!letter) {
-    return ''
-  }
-  return letter.substring(0, 1).toLowerCase() + letter.substring(1)
-}

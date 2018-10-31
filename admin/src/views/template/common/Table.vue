@@ -1,7 +1,7 @@
 <template>
   <div class="content-container">
     <el-row>
-      <el-form v-if="pageData && pageData.searchArea && pageData.searchArea.columns && pageData.searchArea.columns.length > 0" ref="searchForm" :inline="true" label-width="100px">
+      <el-form v-if="pageData && pageData.searchArea && pageData.searchArea.columns && pageData.searchArea.columns.length > 0" ref="searchForm" :inline="true" label-width="80px">
         <el-col v-for="searchItem in pageData.searchArea.columns" :key="searchItem.field" :span="8">
           <el-form-item :label="searchItem.title">
             <el-input v-if="searchItem.type == 'input'" v-model.trim="searchForm[searchItem.field]" clearable />
@@ -22,7 +22,9 @@
             />
           </el-form-item>
         </el-col>
-        <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+        <el-col :span="8">
+          <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+        </el-col>
       </el-form>
     </el-row>
     <el-col :span="24">

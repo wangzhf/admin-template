@@ -1,5 +1,5 @@
 import { getAllMenu } from '@/api/login'
-import { upperFirstLetter, lowerFistLetter } from '@/utils'
+import _ from 'lodash'
 // const _import = require('./utils/_import_' + process.env.NODE_ENV)
 const _import = require('./utils/_import')
 
@@ -14,10 +14,10 @@ function generateRouter(menus, parentPath) {
       const menu = menus[i]
       const route = {}
       route.path = parentPath + menu.path
-      route.name = upperFirstLetter(menu.menuName)
-      route.authority = lowerFistLetter(menu.menuCode)
+      route.name = menu.menuName
+      route.authority = _.lowerFirst(menu.menuCode)
       route.meta = {}
-      route.meta.title = lowerFistLetter(menu.menuCode)
+      route.meta.title = _.lowerFirst(menu.menuCode)
       route.meta.icon = menu.icon
       // refer: https://github.com/vuejs/vue-loader/releases/tag/v13.0.0
       route.component = _import(menu.component)
