@@ -8,6 +8,8 @@ module.exports = {
   dev: {
     // Paths
     assetsSubDirectory: 'static',
+    // for demo
+    // assetsPublicPath: '/admin-template/admin/',
     assetsPublicPath: '/',
     proxyTable: {},
 
