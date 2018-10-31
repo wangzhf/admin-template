@@ -76,20 +76,28 @@
           <span v-for="action in pageData.actions" :key="action.name" style="padding-left: 5px;">
             <el-button
               v-if="action.type == 'treeDialog'"
+              :type="action.theme ? action.theme : ''"
+              :icon="action.icon ? action.icon : ''"
               @click.stop="handleTreeDialog(scope.$index, scope.row, action.name)"
-            >{{ action.title }}</el-button>
+            >{{ action.mini ? '' : action.title }}</el-button>
             <el-button
               v-else-if="action.type == 'tableDialog'"
+              :type="action.theme ? action.theme : ''"
+              :icon="action.icon ? action.icon : ''"
               @click.stop="handleTableDialog(scope.$index, scope.row, action.name)"
-            >{{ action.title }}</el-button>
+            >{{ action.mini ? '' : action.title }}</el-button>
             <el-button
               v-else-if="action.type == 'editDialog'"
+              :type="action.theme ? action.theme : ''"
+              :icon="action.icon ? action.icon : ''"
               @click.stop="handleEdit(scope.$index, scope.row, action.name)"
-            >{{ action.title }}</el-button>
+            >{{ action.mini ? '' : action.title }}</el-button>
             <el-button
               v-else-if="action.type == 'deleteDialog'"
+              :type="action.theme ? action.theme : ''"
+              :icon="action.icon ? action.icon : ''"
               @click.stop="handleDelete(scope.$index, scope.row, action.name)"
-            >{{ action.title }}</el-button>
+            >{{ action.mini ? '' : action.title }}</el-button>
           </span>
         </template>
       </el-table-column>

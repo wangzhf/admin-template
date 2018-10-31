@@ -68,6 +68,9 @@ const pageConfig = [{
       title: '关联用户',
       type: 'tableDialog',
       url: '',
+      theme: 'primary',
+      icon: 'el-icon-fa-user-friends',
+      mini: true,
       dialog: {
         title: '关联用户',
         type: 'table',
@@ -89,6 +92,9 @@ const pageConfig = [{
       title: '关联角色',
       type: 'treeDialog',
       url: '/user/role',
+      theme: 'primary',
+      icon: 'el-icon-fa-users',
+      mini: true,
       dialog: {
         title: '关联角色',
         type: 'tree',
@@ -105,6 +111,7 @@ const pageConfig = [{
       name: 'add',
       title: '新增',
       type: 'addDialog',
+      icon: '',
       dialog: {
         title: '新增',
         type: 'form',
@@ -159,6 +166,9 @@ const pageConfig = [{
       name: 'edit',
       title: '编辑',
       type: 'editDialog',
+      theme: 'primary',
+      icon: 'el-icon-edit',
+      mini: true,
       dialog: {
         title: '编辑',
         editFormVisible: false,
@@ -213,6 +223,9 @@ const pageConfig = [{
       name: 'delete',
       title: '删除',
       type: 'deleteDialog',
+      theme: 'danger',
+      icon: 'el-icon-delete',
+      mini: true,
       dialog: {
 
       }

@@ -4,6 +4,9 @@ import Cookies from 'js-cookie'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
+// font awesome 5
+import '@/styles/fontawesome5.scss'
+
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 

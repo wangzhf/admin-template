@@ -31,6 +31,7 @@
     "url": "git+https://github.com/wangzhf/admin-template.git"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.4.2",
     "axios": "0.18.0",
     "clipboard": "1.7.1",
     "codemirror": "5.39.2",
