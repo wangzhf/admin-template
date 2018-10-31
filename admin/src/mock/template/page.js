@@ -5,39 +5,43 @@ const pageConfig = [{
   pageCode: 'userManager',
   pageData: {
     // 搜索
-    searchArea: [{
-      field: 'userName',
-      title: '用户姓名',
-      type: 'input'
-    },
-    {
-      field: 'userCode',
-      title: '用户代码',
-      type: 'input'
-    },
-    {
-      field: 'province',
-      title: '省',
-      type: 'select',
-      url: '/common/province/list'
-    },
-    {
-      field: 'city',
-      title: '市',
-      type: 'select',
-      // 级联配置
-      dependon: 'province',
-      keyProps: {
-        pid: 'pid'
+    searchArea: {
+      url: '/user/userList',
+      columns: [{
+        field: 'userName',
+        title: '用户姓名',
+        type: 'input'
       },
-      url: '/common/city/list'
+      {
+        field: 'userCode',
+        title: '用户代码',
+        type: 'input'
+      },
+      {
+        field: 'province',
+        title: '省',
+        type: 'select',
+        url: '/common/province/list'
+      },
+      {
+        field: 'city',
+        title: '市',
+        type: 'select',
+        // 级联配置
+        dependon: 'province',
+        keyProps: {
+          pid: 'pid'
+        },
+        url: '/common/city/list'
+      },
+      {
+        field: 'menu',
+        title: '菜单',
+        type: 'selectTree',
+        url: '/menu/list'
+      }]
     },
-    {
-      field: 'menu',
-      title: '菜单',
-      type: 'selectTree',
-      url: '/menu/list'
-    }],
+
     // table展示
     table: {
       columns: [{
@@ -76,6 +80,8 @@ const pageConfig = [{
         title: '关联用户',
         type: 'table',
         queryData: {},
+        listUrl: '/user/userList',
+        confirmUrl: '/user/userList',
         loading: false,
         visible: false,
         columnProps: [{
@@ -101,6 +107,8 @@ const pageConfig = [{
         title: '关联角色',
         type: 'tree',
         queryData: {},
+        listUrl: '/user/role',
+        confirmUrl: '/user/role/add',
         loading: false,
         visible: false,
         keyProps: {
@@ -121,6 +129,8 @@ const pageConfig = [{
         title: '编辑',
         visible: false,
         formData: {},
+        listUrl: '',
+        confirmUrl: '/user/edit',
         formRules: {
           userName: [
             { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -176,7 +186,8 @@ const pageConfig = [{
       mini: true,
       place: 'tableCell',
       dialog: {
-
+        listUrl: '',
+        confirmUrl: '/user/delete'
       }
     }, {
       name: 'add',
@@ -191,6 +202,8 @@ const pageConfig = [{
         type: 'form',
         visible: false,
         formData: {},
+        listUrl: '',
+        confirmUrl: '/user/add',
         formRules: {
           userName: [
             { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -244,7 +257,8 @@ const pageConfig = [{
       icon: 'el-icon-delete',
       place: 'toolbar',
       dialog: {
-
+        listUrl: '',
+        confirmUrl: '/user/batchDelete'
       }
     }]
   }

@@ -1,8 +1,8 @@
 <template>
   <div class="content-container">
     <el-row>
-      <el-form v-if="pageData && pageData.searchArea && pageData.searchArea.length > 0" ref="searchForm" :inline="true" label-width="100px">
-        <el-col v-for="searchItem in pageData.searchArea" :key="searchItem.field" :span="8">
+      <el-form v-if="pageData && pageData.searchArea && pageData.searchArea.columns && pageData.searchArea.columns.length > 0" ref="searchForm" :inline="true" label-width="100px">
+        <el-col v-for="searchItem in pageData.searchArea.columns" :key="searchItem.field" :span="8">
           <el-form-item :label="searchItem.title">
             <el-input v-if="searchItem.type == 'input'" v-model.trim="searchForm[searchItem.field]" clearable />
 
@@ -32,13 +32,13 @@
             v-if="action.type == 'addDialog'"
             :type="action.theme ? action.theme : ''"
             :icon="action.icon ? action.icon : ''"
-            @click="handleAdd"
+            @click="handleAdd(action.name)"
           >{{ action.title }}</el-button>
           <el-button
             v-else-if="action.type == 'deleteConfirm'"
             :type="action.theme ? action.theme : ''"
             :icon="action.icon ? action.icon : ''"
-            @click="batchDelete"
+            @click="batchDelete(action.dialog.confirmUrl)"
           >{{ action.title }}</el-button>
         </span>
         <el-button v-if="needExpand" :icon="expandBtn.icon" type="primary" @click="handleChildExpand">{{ expandBtn.text }}</el-button>
@@ -92,14 +92,14 @@
               :type="action.theme ? action.theme : ''"
               :icon="action.icon ? action.icon : ''"
               :class="action.mini ? 'mini-btn-style' : ''"
-              @click.stop="handleTreeDialog(scope.$index, scope.row, action.name)"
+              @click.stop="handleDialogVisible(scope.$index, scope.row, action.name)"
             >{{ action.mini ? '' : action.title }}</el-button>
             <el-button
               v-else-if="action.type == 'tableDialog'"
               :type="action.theme ? action.theme : ''"
               :icon="action.icon ? action.icon : ''"
               :class="action.mini ? 'mini-btn-style' : ''"
-              @click.stop="handleTableDialog(scope.$index, scope.row, action.name)"
+              @click.stop="handleDialogVisible(scope.$index, scope.row, action.name)"
             >{{ action.mini ? '' : action.title }}</el-button>
             <el-button
               v-else-if="action.type == 'editDialog'"
@@ -113,7 +113,7 @@
               :type="action.theme ? action.theme : ''"
               :icon="action.icon ? action.icon : ''"
               :class="action.mini ? 'mini-btn-style' : ''"
-              @click.stop="handleDelete(scope.$index, scope.row, action.name)"
+              @click.stop="handleDelete(scope.$index, scope.row, action.name, action.dialog.confirmUrl)"
             >{{ action.mini ? '' : action.title }}</el-button>
           </span>
         </template>
@@ -195,11 +195,11 @@
           :query-data="action.dialog.queryData"
           :is-tree-dialog-loading="action.dialog.loading"
           :key-props="action.dialog.keyProps"
-          url="/user/role"
+          :url="action.dialog.listUrl"
         />
         <span slot="footer" class="dialog-footer">
           <el-button @click.native="action.dialog.visible = false">取 消</el-button>
-          <el-button type="primary" @click="handleTreeDialogConfirm(action.name, action.name + 'TreeDialog')">确 定</el-button>
+          <el-button type="primary" @click="handleDialogConfirm(action.name, action.name + 'TreeDialog')">确 定</el-button>
         </span>
       </el-dialog>
 
@@ -215,11 +215,11 @@
           :ref="action.name + 'TableDialog'"
           :should-loading="action.dialog.loading"
           :table-columns="action.dialog.columnProps"
-          url="/user/userList"
+          :url="action.dialog.listUrl"
         />
         <span slot="footer" class="dialog-footer">
           <el-button @click.native="action.dialog.visible = false">取 消</el-button>
-          <el-button type="primary" @click="handleTableDialogConfirm(action.name, action.name + 'TableDialog')">确 定</el-button>
+          <el-button type="primary" @click="handleDialogConfirm(action.name, action.name + 'TableDialog')">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -234,16 +234,6 @@ import selectTree from '@/components/Im/SelectTree'
 import ImTree from '@/components/Im/Tree'
 import ImTable from '@/components/Im/Table'
 // import treeter from '@/components/Tree/treeter'
-
-// 定义请求链接地址
-const AddUrl = '/user/add'
-const UpdateUrl = '/user/edit'
-const DeleteUrl = '/user/delete'
-const BatchDeleteUrl = '/user/batchDelete'
-const SearchUrl = '/user/userList'
-// const listTreeDataUrl = '/user/role'
-const addTreeDataUrl = '/user/role/add'
-const addTableDataUrl = '/user/add'
 
 export default {
   name: 'Table',
@@ -318,7 +308,8 @@ export default {
         currentPage: this.currentPage,
         pageSize: this.pageSize
       }
-      commonAPI.Post(SearchUrl, params).then(res => {
+      const searchUrl = this.pageData.searchArea.url
+      commonAPI.Post(searchUrl, params).then(res => {
         this.list = res.data.list
         this.total = res.data.total
       }).catch(err => {
@@ -329,13 +320,13 @@ export default {
         })
       })
     },
-    handleAdd() {
+    handleAdd(type) {
       const actions = this.pageData.actions
       if (actions && actions.length > 0) {
         actions.forEach(action => {
           const dialog = action.dialog
           if (dialog && dialog.title) {
-            if (dialog.type === 'form' && action.name === 'add') {
+            if (dialog.type === 'form' && action.name === type) {
               dialog.visible = true
             }
           }
@@ -356,11 +347,11 @@ export default {
         })
       }
     },
-    handleDelete(index, row) {
+    handleDelete(index, row, type, url) {
       this.$confirm('确认删除该记录吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        commonAPI.Post(DeleteUrl, { id: row.id }).then(res => {
+        commonAPI.Post(url, { id: row.id }).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功'
@@ -372,12 +363,12 @@ export default {
       })
     },
     // 批量删除
-    batchDelete() {
+    batchDelete(url) {
       const ids = this.multipleSelection.map(item => item.id).toString()
       this.$confirm('确认删除选中记录吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        commonAPI.Get(BatchDeleteUrl, { ids: ids }).then(res => {
+        commonAPI.Post(url, { ids: ids }).then(res => {
           this.$message({
             type: 'success',
             message: '删除成功'
@@ -430,10 +421,6 @@ export default {
     },
     // 编辑提交
     formDialogSubmit(type) {
-      let requestUrl = UpdateUrl
-      if (type === 'add') {
-        requestUrl = AddUrl
-      }
       const actions = this.pageData.actions
       if (actions && actions.length > 0) {
         actions.forEach(action => {
@@ -445,7 +432,7 @@ export default {
                 if (valid) {
                   this.$confirm('确认提交吗？', '提示', {}).then(() => {
                     const param = Object.assign({}, dialog.formData)
-                    commonAPI.Post(requestUrl, param).then(res => {
+                    commonAPI.Post(dialog.confirmUrl, param).then(res => {
                       this.$message({
                         type: 'success',
                         message: '操作成功'
@@ -464,14 +451,14 @@ export default {
         })
       }
     },
-    // tree dialog 显示
-    handleTreeDialog(index, row, type) {
+    // dialog 显示
+    handleDialogVisible(index, row, type) {
       const actions = this.pageData.actions
       if (actions && actions.length > 0) {
         actions.forEach(action => {
           const dialog = action.dialog
           if (dialog && dialog.title) {
-            if (dialog.type === 'tree' && action.name === type) {
+            if (action.name === type) {
               dialog.linkId = row.id
               const param = {
                 id: row.id
@@ -484,8 +471,8 @@ export default {
         })
       }
     },
-    // tree dialog 确认事件
-    handleTreeDialogConfirm(type, ref) {
+    // dialog 确认事件
+    handleDialogConfirm(type, ref) {
       const checkedKeys = this.$refs[ref][0].getSelection().map(item => {
         return item.id
       })
@@ -495,62 +482,12 @@ export default {
         actions.forEach(action => {
           const dialog = action.dialog
           if (dialog && dialog.title) {
-            if (dialog.type === 'tree' && action.name === type) {
+            if (action.name === type) {
               const params = {
                 id: dialog.linkId,
                 data: checkedKeys
               }
-              commonAPI.Post(addTreeDataUrl, params).then(res => {
-                this.$message({
-                  type: 'success',
-                  message: '操作成功'
-                })
-                dialog.visible = false
-                dialog.linkId = null
-                dialog.loading = false
-              })
-            }
-          }
-        })
-      }
-    },
-
-    // table dialog
-    handleTableDialog(index, row, type) {
-      const actions = this.pageData.actions
-      if (actions && actions.length > 0) {
-        actions.forEach(action => {
-          const dialog = action.dialog
-          if (dialog && dialog.title) {
-            if (dialog.type === 'table' && action.name === type) {
-              dialog.linkId = row.id
-              const param = {
-                id: row.id
-              }
-              dialog.queryData = param
-              dialog.loading = true
-              dialog.visible = true
-            }
-          }
-        })
-      }
-    },
-    handleTableDialogConfirm(type, ref) {
-      const checkedKeys = this.$refs[ref][0].getSelection().map(item => {
-        return item.id
-      })
-
-      const actions = this.pageData.actions
-      if (actions && actions.length > 0) {
-        actions.forEach(action => {
-          const dialog = action.dialog
-          if (dialog && dialog.title) {
-            if (dialog.type === 'table' && action.name === type) {
-              const params = {
-                id: dialog.linkId,
-                data: checkedKeys
-              }
-              commonAPI.Post(addTableDataUrl, params).then(res => {
+              commonAPI.Post(dialog.confirmUrl, params).then(res => {
                 this.$message({
                   type: 'success',
                   message: '操作成功'
