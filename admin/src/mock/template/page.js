@@ -71,6 +71,7 @@ const pageConfig = [{
       theme: 'primary',
       icon: 'el-icon-fa-user-friends',
       mini: true,
+      place: 'tableCell',
       dialog: {
         title: '关联用户',
         type: 'table',
@@ -95,6 +96,7 @@ const pageConfig = [{
       theme: 'primary',
       icon: 'el-icon-fa-users',
       mini: true,
+      place: 'tableCell',
       dialog: {
         title: '关联角色',
         type: 'tree',
@@ -108,67 +110,13 @@ const pageConfig = [{
         linkId: null
       }
     }, {
-      name: 'add',
-      title: '新增',
-      type: 'addDialog',
-      icon: '',
-      dialog: {
-        title: '新增',
-        type: 'form',
-        addFormVisible: false,
-        addForm: {},
-        addFormRules: {
-          userName: [
-            { required: true, message: '请输入活动名称', trigger: 'blur' },
-            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-          ]
-        },
-        columns: [{
-          field: 'userName',
-          title: '用户姓名',
-          type: 'input'
-        }, {
-          field: 'userCode',
-          title: '用户代码',
-          type: 'input'
-        }, {
-          field: 'sex',
-          title: '性别',
-          type: 'radio',
-          options: [
-            {
-              label: '男',
-              value: 1
-            }, {
-              label: '女',
-              value: 0
-            }
-          ]
-        }, {
-          field: 'age',
-          title: '年龄',
-          type: 'number',
-          option: {
-            min: 0,
-            max: 200
-          }
-        }, {
-          field: 'birthday',
-          title: '生日',
-          type: 'date'
-        }, {
-          field: 'address',
-          title: '地址',
-          type: 'textarea'
-        }]
-      }
-    }, {
       name: 'edit',
       title: '编辑',
       type: 'editDialog',
       theme: 'primary',
       icon: 'el-icon-edit',
       mini: true,
+      place: 'tableCell',
       dialog: {
         title: '编辑',
         editFormVisible: false,
@@ -222,10 +170,79 @@ const pageConfig = [{
     }, {
       name: 'delete',
       title: '删除',
-      type: 'deleteDialog',
+      type: 'deleteConfirm',
       theme: 'danger',
       icon: 'el-icon-delete',
       mini: true,
+      place: 'tableCell',
+      dialog: {
+
+      }
+    }, {
+      name: 'add',
+      title: '新增',
+      type: 'addDialog',
+      icon: 'el-icon-plus',
+      theme: 'primary',
+      mini: false,
+      place: 'toolbar',
+      dialog: {
+        title: '新增',
+        type: 'form',
+        addFormVisible: false,
+        addForm: {},
+        addFormRules: {
+          userName: [
+            { required: true, message: '请输入活动名称', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ]
+        },
+        columns: [{
+          field: 'userName',
+          title: '用户姓名',
+          type: 'input'
+        }, {
+          field: 'userCode',
+          title: '用户代码',
+          type: 'input'
+        }, {
+          field: 'sex',
+          title: '性别',
+          type: 'radio',
+          options: [
+            {
+              label: '男',
+              value: 1
+            }, {
+              label: '女',
+              value: 0
+            }
+          ]
+        }, {
+          field: 'age',
+          title: '年龄',
+          type: 'number',
+          option: {
+            min: 0,
+            max: 200
+          }
+        }, {
+          field: 'birthday',
+          title: '生日',
+          type: 'date'
+        }, {
+          field: 'address',
+          title: '地址',
+          type: 'textarea'
+        }]
+      }
+    }, {
+      name: 'batchDelete',
+      title: '批量删除',
+      type: 'deleteConfirm',
+      theme: 'primary',
+      icon: 'el-icon-delete',
+      place: 'toolbar',
       dialog: {
 
       }
