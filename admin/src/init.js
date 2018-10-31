@@ -14,7 +14,7 @@ function generateRouter(menus, parentPath) {
       const menu = menus[i]
       const route = {}
       route.path = parentPath + menu.path
-      route.name = upperFirstLetter(menu.menuCode)
+      route.name = upperFirstLetter(menu.menuName)
       route.authority = lowerFistLetter(menu.menuCode)
       route.meta = {}
       route.meta.title = lowerFistLetter(menu.menuCode)
