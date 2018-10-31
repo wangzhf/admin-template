@@ -154,7 +154,7 @@ export default {
         pageSize: this.pageSize
       }
       getUserList(params).then(res => {
-        this.userList = res.data.users
+        this.userList = res.data.list
         this.total = res.data.total
       })
     },

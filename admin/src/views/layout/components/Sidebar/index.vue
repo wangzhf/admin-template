@@ -48,8 +48,6 @@ export default {
         if (name && title && !messages.en.route[title]) {
           messages.en.route[title] = _.startCase(title)
           messages.zh.route[title] = name
-          console.log(messages.en.route[title])
-          console.log(messages.zh.route[title])
         }
         if (item.children && item.children.length > 0) {
           this.handleRouter(item.children, messages)

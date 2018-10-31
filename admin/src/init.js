@@ -40,7 +40,6 @@ export const handleRouter = () => {
   return getAllMenu().then(res => {
     const menus = res.data
     const asyncRouterList = generateRouter(menus, '')
-    console.log(asyncRouterList)
     return asyncRouterList
   }).catch(error => {
     console.log('error from init: ')
