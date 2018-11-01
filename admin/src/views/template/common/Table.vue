@@ -12,13 +12,13 @@
               :dependon-key="searchItem.dependon ? searchItem.dependon : ''"
               :key-props="searchItem.dependon ? searchItem.keyProps : null"
               :url="searchItem.url"
-              @select-change="(val) => searchForm[searchItem.field] = val"
+              @select-change="(val) => $set(searchForm, searchItem.field, val)"
             />
 
             <im-el-select-tree
               v-if="searchItem.type == 'selectTree'"
               :url="searchItem.url"
-              @select-change="(val) => searchForm[searchItem.field] = val"
+              @select-change="(val) => $set(searchForm, searchItem.field, val)"
             />
           </el-form-item>
         </el-col>
