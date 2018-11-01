@@ -198,3 +198,13 @@ code {
   width: 100%;
   padding: 20px 10px;
 }
+
+// nprogress
+#nprogress {
+  .bar {
+    height: 3px !important;
+  }
+  .spinner {
+    top: 45px !important;
+  }
+}

@@ -23,7 +23,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+          <el-button :loading="searchLoading" type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
         </el-col>
       </el-form>
     </el-row>
@@ -179,7 +179,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click.native="action.dialog.visible = false">取消</el-button>
+          <el-button @click.native="action.dialog.visible = false; $refs[action.name + 'Form'][0].resetFields();">取消</el-button>
           <el-button type="primary" @click.native="formDialogSubmit(action.name)">提交</el-button>
         </div>
       </el-dialog>
@@ -272,7 +272,8 @@ export default {
       needExpand: this.pageData.table && this.pageData.table.childColumns && this.pageData.table.childColumns.length > 0,
 
       // 记录多选记录
-      multipleSelection: []
+      multipleSelection: [],
+      searchLoading: false
     }
   },
 
@@ -302,6 +303,7 @@ export default {
   methods: {
     // load the list.
     handleSearch() {
+      this.searchLoading = true
       this.load()
     },
     load() {
@@ -314,12 +316,14 @@ export default {
       commonAPI.Post(searchUrl, params).then(res => {
         this.list = res.data.list
         this.total = res.data.total
+        this.searchLoading = false
       }).catch(err => {
         console.log(err)
         this.$message({
           type: 'error',
           message: '数据加载失败，请稍后重试'
         })
+        this.searchLoading = false
       })
     },
     handleAdd(type) {
