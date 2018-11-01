@@ -1,9 +1,0 @@
-{
-  "name": "admin-cli",
-  "version": "1.0.0",
-  "description": "Config and generate vue pages with the template.",
-  "main": "index.js",
-  "repository": "https://github.com/wangzhf/admin-template.git",
-  "author": "wangzhf",
-  "license": "MIT"
-}
