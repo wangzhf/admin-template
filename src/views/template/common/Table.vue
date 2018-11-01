@@ -40,6 +40,7 @@
             v-else-if="action.type == 'deleteConfirm'"
             :type="action.theme ? action.theme : ''"
             :icon="action.icon ? action.icon : ''"
+            :disabled="disabledBatchBtn"
             @click="batchDelete(action.dialog.confirmUrl)"
           >{{ action.title }}</el-button>
         </span>

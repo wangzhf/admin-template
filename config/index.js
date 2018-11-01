@@ -9,7 +9,7 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     // for demo
-    // assetsPublicPath: '/admin-template/admin/',
+    // assetsPublicPath: '/admin-template/',
     assetsPublicPath: '/',
     proxyTable: {},
 
