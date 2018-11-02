@@ -3,11 +3,9 @@ import Mock from 'mockjs'
 let menuList = [
   {
     id: 1,
-    title: '首页',
     menuName: '首页',
     menuCode: 'dashBoard',
     type: 'menu',
-    uri: '/dashboard',
     path: '/dashboard',
     icon: 'solid_home',
     component: '/layout/Layout',
@@ -18,11 +16,9 @@ let menuList = [
   },
   {
     id: 2,
-    title: '系统管理',
     menuName: '系统管理',
     menuCode: 'system',
     type: 'menu',
-    uri: '/system',
     path: '/system',
     icon: 'solid_cog',
     component: '/layout/Layout',
@@ -33,11 +29,9 @@ let menuList = [
     children: [
       {
         id: 3,
-        title: '用户管理',
         menuName: '用户管理',
         menuCode: 'userManager',
         type: 'menu',
-        uri: '/user',
         path: '/user',
         icon: 'solid_user',
         component: '/system/user/index',
@@ -48,11 +42,9 @@ let menuList = [
       },
       {
         id: 4,
-        title: '角色管理',
         menuName: '角色管理',
         menuCode: 'roleManager',
         type: 'menu',
-        uri: '/role',
         path: '/role',
         icon: 'solid_users',
         component: '/system/role/index',
@@ -63,11 +55,9 @@ let menuList = [
       },
       {
         id: 11,
-        title: '菜单管理',
         menuName: '菜单管理',
         menuCode: 'menuManager',
         type: 'menu',
-        uri: '/menu',
         path: '/menu',
         icon: 'solid_bars',
         component: '/system/menu/index',
@@ -78,11 +68,9 @@ let menuList = [
       },
       // {
       //   id: 5,
-      //   title: '资源管理',
       //   menuName: '资源管理',
       //   menuCode: 'resourceManager',
       //   type: 'menu',
-      //   uri: '/resource',
       //   path: '/resource',
       //   icon: 'solid_warehouse',
       //   component: '/system/resource/index',
@@ -93,11 +81,9 @@ let menuList = [
       // },
       {
         id: 6,
-        title: '角色用户管理',
         menuName: '角色用户管理',
         menuCode: 'roleUserManager',
         type: 'menu',
-        uri: '/roleuser',
         path: '/roleuser',
         icon: 'solid_user-friends',
         component: '/system/roleuser/index',
@@ -108,11 +94,9 @@ let menuList = [
       },
       {
         id: 7,
-        title: '角色资源管理',
         menuName: '角色资源管理',
         menuCode: 'roleResourceManager',
         type: 'menu',
-        uri: '/roleresource',
         path: '/roleresource',
         icon: 'solid_users-cog',
         component: '/system/roleresource/index',
@@ -123,11 +107,9 @@ let menuList = [
       },
       {
         id: 8,
-        title: '子菜单测试',
         menuName: '子菜单测试',
         menuCode: 'childMenu',
         type: 'menu',
-        uri: '/childMenu',
         path: '/childMenu',
         icon: 'solid_align-center',
         component: '/system/childMenu/index',
@@ -138,11 +120,9 @@ let menuList = [
         children: [
           {
             id: 9,
-            title: '子菜单测试2',
             menuName: '子菜单测试2',
             menuCode: 'childMenu2',
             type: 'menu',
-            uri: '/childMenu2',
             path: '/childMenu2',
             icon: 'solid_equals',
             component: '/system/childMenu/childMenu2/index',
@@ -153,11 +133,9 @@ let menuList = [
           },
           {
             id: 10,
-            title: '子菜单测试3',
             menuName: '子菜单测试3',
             menuCode: 'childMenu3',
             type: 'menu',
-            uri: '/childMenu3',
             path: '/childMenu3',
             icon: 'solid_equals',
             component: '/system/childMenu/childMenu2/child3',
@@ -172,11 +150,9 @@ let menuList = [
   },
   {
     id: 11,
-    title: '个人中心',
     menuName: '个人中心',
     menuCode: 'userCenter',
     type: 'menu',
-    uri: '/usercenter',
     path: '/usercenter',
     icon: 'solid_address-book',
     component: '/layout/Layout',
@@ -187,11 +163,9 @@ let menuList = [
     children: [
       {
         id: 12,
-        title: '我的',
         menuName: '我的',
         menuCode: 'me',
         type: 'menu',
-        uri: '/me',
         path: '/me',
         icon: 'solid_info',
         component: '/usercenter/me/index',
@@ -204,11 +178,9 @@ let menuList = [
   },
   {
     id: 13,
-    title: '模板',
     menuName: '模板',
     menuCode: 'template',
     type: 'menu',
-    uri: '/template',
     path: '/template',
     icon: 'iconmoon_icon-insert-template',
     component: '/layout/Layout',
@@ -219,11 +191,9 @@ let menuList = [
     children: [
       {
         id: 14,
-        title: '表格样式',
         menuName: '表格样式',
         menuCode: 'table',
         type: 'menu',
-        uri: '/table',
         path: '/table',
         icon: 'solid_table',
         component: '/template/table/index2',
@@ -233,11 +203,9 @@ let menuList = [
         parentId: 13
       }, {
         id: 16,
-        title: '用户表',
         menuName: '用户表',
         menuCode: 'userTable',
         type: 'menu',
-        uri: '/common/user-table',
         path: '/common/user-table',
         icon: 'solid_table',
         component: '/template/common/index',
@@ -245,6 +213,34 @@ let menuList = [
         sort: 20,
         remarks: '',
         parentId: 15
+      }
+    ]
+  },
+  {
+    id: 17,
+    menuName: '原版留存',
+    menuCode: 'history',
+    type: 'menu',
+    path: '/history',
+    icon: 'iconmoon_icon-insert-template',
+    component: '/layout/Layout',
+    usable: 1,
+    sort: 20,
+    remarks: '',
+    parentId: null,
+    children: [
+      {
+        id: 18,
+        menuName: '表格样式',
+        menuCode: 'tableHistory',
+        type: 'menu',
+        path: '/table',
+        icon: 'solid_table',
+        component: '/history/table/index',
+        usable: 1,
+        sort: 20,
+        remarks: '',
+        parentId: 17
       }
     ]
   }

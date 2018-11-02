@@ -126,6 +126,20 @@ const userMap = {
         method: 'GET',
         type: 'menu',
         uri: '/user-table'
+      },
+      {
+        menuCode: 'history',
+        menuName: '历史留存',
+        method: 'GET',
+        type: 'menu',
+        uri: '/history'
+      },
+      {
+        menuCode: 'tableHistory',
+        menuName: '表格样式',
+        method: 'GET',
+        type: 'menu',
+        uri: '/table-history'
       }
     ]
   },

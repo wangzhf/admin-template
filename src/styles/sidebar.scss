@@ -21,6 +21,7 @@
     .el-scrollbar {
       height: 100%;
       border-right: $borderStyle;
+      padding-bottom: $navBarHeight + 10px;
     }
     //reset element-ui css
     .horizontal-collapse-transition {
