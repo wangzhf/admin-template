@@ -91,6 +91,13 @@ const userMap = {
         method: 'GET',
         type: 'menu',
         uri: '/table-history'
+      },
+      {
+        menuCode: 'dialogHistory',
+        menuName: 'Dialog',
+        method: 'GET',
+        type: 'menu',
+        uri: '/dialog'
       }
     ]
   },

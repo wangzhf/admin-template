@@ -160,6 +160,19 @@ let menuList = [
         sort: 20,
         remarks: '',
         parentId: 17
+      },
+      {
+        id: 19,
+        menuName: 'Dialog',
+        menuCode: 'dialogHistory',
+        type: 'menu',
+        path: '/dialog',
+        icon: 'solid_table',
+        component: '/history/dialog/index',
+        usable: 1,
+        sort: 20,
+        remarks: '',
+        parentId: 17
       }
     ]
   }
