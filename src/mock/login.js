@@ -5,7 +5,7 @@ const userMap = {
     roles: ['admin'],
     token: 'admin',
     introduction: '我是超级管理员',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    avatar: 'https://avatars0.githubusercontent.com/u/17498251?s=460&v=4',
     name: 'Super Admin',
     menus: [
       {
@@ -65,41 +65,6 @@ const userMap = {
         uri: '/roleresource'
       },
       {
-        menuCode: 'childMenu',
-        menuName: '子菜单测试',
-        method: 'GET',
-        type: 'menu',
-        uri: '/child'
-      },
-      {
-        menuCode: 'childMenu2',
-        menuName: '子菜单测试2',
-        method: 'GET',
-        type: 'menu',
-        uri: '/child2'
-      },
-      {
-        menuCode: 'childMenu3',
-        menuName: '子菜单测试3',
-        method: 'GET',
-        type: 'menu',
-        uri: '/child3'
-      },
-      {
-        menuCode: 'userCenter',
-        menuName: '个人中心',
-        method: 'GET',
-        type: 'menu',
-        uri: '/usercenter'
-      },
-      {
-        menuCode: 'me',
-        menuName: '我的',
-        method: 'GET',
-        type: 'menu',
-        uri: '/me'
-      },
-      {
         menuCode: 'template',
         menuName: '模板',
         method: 'GET',
@@ -114,22 +79,8 @@ const userMap = {
         uri: '/table'
       },
       {
-        menuCode: 'common',
-        menuName: '普通',
-        method: 'GET',
-        type: 'menu',
-        uri: '/common'
-      },
-      {
-        menuCode: 'userTable',
-        menuName: '用户表',
-        method: 'GET',
-        type: 'menu',
-        uri: '/user-table'
-      },
-      {
         menuCode: 'history',
-        menuName: '历史留存',
+        menuName: '历史',
         method: 'GET',
         type: 'menu',
         uri: '/history'

@@ -104,75 +104,6 @@ let menuList = [
         sort: 20,
         remarks: '',
         parentId: 2
-      },
-      {
-        id: 8,
-        menuName: '子菜单测试',
-        menuCode: 'childMenu',
-        type: 'menu',
-        path: '/childMenu',
-        icon: 'solid_align-center',
-        component: '/system/childMenu/index',
-        usable: 1,
-        sort: 20,
-        remarks: '',
-        parentId: 2,
-        children: [
-          {
-            id: 9,
-            menuName: '子菜单测试2',
-            menuCode: 'childMenu2',
-            type: 'menu',
-            path: '/childMenu2',
-            icon: 'solid_equals',
-            component: '/system/childMenu/childMenu2/index',
-            usable: 1,
-            sort: 20,
-            remarks: '',
-            parentId: 8
-          },
-          {
-            id: 10,
-            menuName: '子菜单测试3',
-            menuCode: 'childMenu3',
-            type: 'menu',
-            path: '/childMenu3',
-            icon: 'solid_equals',
-            component: '/system/childMenu/childMenu2/child3',
-            usable: 1,
-            sort: 20,
-            remarks: '',
-            parentId: 8
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 11,
-    menuName: '个人中心',
-    menuCode: 'userCenter',
-    type: 'menu',
-    path: '/usercenter',
-    icon: 'solid_address-book',
-    component: '/layout/Layout',
-    usable: 1,
-    sort: 20,
-    remarks: '',
-    parentId: null,
-    children: [
-      {
-        id: 12,
-        menuName: '我的',
-        menuCode: 'me',
-        type: 'menu',
-        path: '/me',
-        icon: 'solid_info',
-        component: '/usercenter/me/index',
-        usable: 1,
-        sort: 20,
-        remarks: '',
-        parentId: 11
       }
     ]
   },
@@ -196,33 +127,21 @@ let menuList = [
         type: 'menu',
         path: '/table',
         icon: 'solid_table',
-        component: '/template/table/index2',
-        usable: 1,
-        sort: 20,
-        remarks: '',
-        parentId: 13
-      }, {
-        id: 16,
-        menuName: '用户表',
-        menuCode: 'userTable',
-        type: 'menu',
-        path: '/common/user-table',
-        icon: 'solid_table',
         component: '/template/common/index',
         usable: 1,
         sort: 20,
         remarks: '',
-        parentId: 15
+        parentId: 13
       }
     ]
   },
   {
     id: 17,
-    menuName: '原版留存',
+    menuName: '历史',
     menuCode: 'history',
     type: 'menu',
     path: '/history',
-    icon: 'iconmoon_icon-insert-template',
+    icon: 'solid_history',
     component: '/layout/Layout',
     usable: 1,
     sort: 20,
