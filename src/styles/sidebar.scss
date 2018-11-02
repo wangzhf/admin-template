@@ -18,11 +18,13 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
+
     .el-scrollbar {
       height: 100%;
       border-right: $borderStyle;
-      padding-bottom: $navBarHeight + 10px;
+      padding-bottom: $navBarHeight;
     }
+
     //reset element-ui css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
@@ -53,6 +55,14 @@
       width: 100% !important;
       background-color: $menuBg;
 
+      .el-submenu {
+        .el-submenu__title {
+          &:hover {
+            background-color: $menuHover !important;
+          }
+        }
+      }
+
       .el-menu-item {
         color: $menuTextColor;
         &:hover {
@@ -62,9 +72,6 @@
     }
     .is-active > .el-submenu__title{
         color: $submenuTitleColor!important;
-        &:hover {
-          background-color: $menuHover !important;
-        }
     }
   }
   .hideSidebar {

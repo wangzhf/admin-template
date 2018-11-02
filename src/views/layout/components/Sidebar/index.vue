@@ -1,13 +1,16 @@
 <template>
   <div>
     <logo />
-    <el-scrollbar wrap-class="scrollbar-wrapper">
+    <el-scrollbar ref="menuScrollbar" wrap-class="scrollbar-wrapper">
       <el-menu
         :show-timeout="200"
         :default-active="$route.path"
         :collapse="isCollapse"
         mode="vertical"
         active-text-color="#409EFF"
+        @select="handleMenuSelect"
+        @open="handleMenuOpen"
+        @close="handleMenuClose"
       >
         <sidebar-item v-for="route in permission_routers" :key="route.path" :item="route" :base-path="route.path"/>
       </el-menu>
@@ -53,6 +56,18 @@ export default {
           this.handleRouter(item.children, messages)
         }
       })
+    },
+    handleMenuSelect(index, indexPath) {
+      this.handleScroll()
+    },
+    handleMenuOpen(index, indexPath) {
+      this.handleScroll()
+    },
+    handleMenuClose(index, indexPath) {
+      this.handleScroll()
+    },
+    handleScroll() {
+      this.$refs.menuScrollbar.update()
     }
   }
 }
