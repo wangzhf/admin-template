@@ -42,23 +42,30 @@ export default {
   data() {
     return {
       dataList: [],
-      multipleSelection: []
+      multipleSelection: [],
+      loading: false
     }
   },
 
-  computed: {
-    loading() {
-      if (this.shouldLoading) {
-        this.load()
-      }
-      return this.shouldLoading
-    }
-  },
+  // computed: {
+  //   loading() {
+  //     if (this.shouldLoading) {
+  //       console.log('should loading changed.....: ' + this.shouldLoading)
+  //       this.load()
+  //     }
+  //     return this.shouldLoading
+  //   }
+  // },
 
   watch: {
-    // this can make loading work
-    loading(val) {
-      // ...
+    shouldLoading: {
+      handler(val, oldVal) {
+        if (val) {
+          this.load()
+        }
+      },
+      deep: true,
+      immediate: true
     }
   },
 
@@ -91,6 +98,10 @@ export default {
 
     getSelection() {
       return this.multipleSelection
+    },
+
+    close() {
+      this.$refs.table.clearSelection()
     }
   }
 }

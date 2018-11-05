@@ -80,7 +80,6 @@ export default {
   watch: {
     // not work
     loading(val) {
-      console.log('loading change: ' + val)
       if (val) {
         this.load()
       }
@@ -110,6 +109,12 @@ export default {
     },
     getSelection() {
       return this.selectedList
+    },
+
+    close() {
+      this.defaultCheckedKeys = []
+      this.selectedList = []
+      this.$refs.tree.setCheckedKeys([])
     }
   }
 }
