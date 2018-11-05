@@ -143,6 +143,7 @@
         :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
+        @close="handleDialogClose(action.name, action.name + 'Form')"
       >
         <el-form
           v-if="action.dialog.columns && action.dialog.columns.length > 0"
@@ -192,6 +193,7 @@
         :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
+        @close="handleDialogClose(action.name, action.name + 'TreeDialog')"
       >
         <im-tree
           :ref="action.name + 'TreeDialog'"
@@ -213,6 +215,7 @@
         :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
+        @close="handleDialogClose(action.name, action.name + 'TableDialog')"
       >
         <im-table
           :ref="action.name + 'TableDialog'"
@@ -503,6 +506,23 @@ export default {
                 dialog.linkId = null
                 dialog.loading = false
               })
+            }
+          }
+        })
+      }
+    },
+    handleDialogClose(type, ref) {
+      const actions = this.pageData.actions
+      if (actions && actions.length > 0) {
+        actions.forEach(action => {
+          const dialog = action.dialog
+          if (dialog && dialog.title) {
+            if (action.name === type) {
+              if (dialog.loading) dialog.loading = false
+              if (dialog.linkId) dialog.linkId = null
+              if (typeof this.$refs[ref][0].close === 'function') {
+                this.$refs[ref][0].close()
+              }
             }
           }
         })
