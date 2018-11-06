@@ -45,6 +45,10 @@ export default {
     url: {
       type: String,
       default: ''
+    },
+    source: {
+      type: Array,
+      default: () => []
     }
   },
 
@@ -106,13 +110,19 @@ export default {
     },
 
     load() {
-      const params = {}
-      if (this.dependonKey && this.dependonValue) {
-        params[this.mergedKeyProps.pid] = this.dependonValue
+      if (this.source && this.source.length > 0) {
+        this.dataList = this.source
+      } else if (this.url) {
+        const params = {}
+        if (this.dependonKey && this.dependonValue) {
+          params[this.mergedKeyProps.pid] = this.dependonValue
+        }
+        commonAPI.Get(this.url, params).then(res => {
+          this.dataList = res.data
+        })
+      } else {
+        // console.log('no source and url found, nothing todo')
       }
-      commonAPI.Post(this.url, params).then(res => {
-        this.dataList = res.data
-      })
     }
   }
 }

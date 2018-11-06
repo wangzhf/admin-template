@@ -10,6 +10,7 @@
               v-if="searchItem.type == 'select'"
               :dependon-value="searchItem.dependon ? searchForm[searchItem.dependon] + '' : ''"
               :dependon-key="searchItem.dependon ? searchItem.dependon : ''"
+              :source="searchItem.source ? searchItem.source : null"
               :key-props="searchItem.dependon ? searchItem.keyProps : null"
               :url="searchItem.url"
               @select-change="(val) => $set(searchForm, searchItem.field, val)"
@@ -118,6 +119,13 @@
               :class="action.mini ? 'mini-btn-style' : ''"
               @click.stop="handleDelete(scope.$index, scope.row, action.name, action.dialog.confirmUrl)"
             >{{ action.mini ? '' : action.title }}</el-button>
+            <el-button
+              v-else-if="action.type == 'confirm'"
+              :type="action.theme ? action.theme : ''"
+              :icon="action.icon ? action.icon : ''"
+              :class="action.mini ? 'mini-btn-style' : ''"
+              @click.stop="handleConfirm(scope.$index, scope.row, action.name, action.dialog.confirmUrl, action.title)"
+            >{{ action.mini ? '' : action.title }}</el-button>
           </span>
         </template>
       </el-table-column>
@@ -143,43 +151,72 @@
         :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
+        :top="dialogTop"
         @close="handleDialogClose(action.name, action.name + 'Form')"
       >
-        <el-form
-          v-if="action.dialog.columns && action.dialog.columns.length > 0"
-          :ref="action.name + 'Form'"
-          :model="action.dialog.formData"
-          :rules="action.dialog.formRules"
-          label-width="80px"
+        <el-scrollbar
+          tag="div"
+          class="is-empty"
+          wrap-class="el-select-dropdown__wrap"
+          view-class="el-select-dropdown__list"
         >
-          <el-form-item v-for="item in action.dialog.columns" :key="item.field" :label="item.title" :prop="item.field">
-            <el-input
-              v-if="item.type == 'input'"
-              v-model="action.dialog.formData[item.field]"
-              auto-complete="off"
-            />
-            <el-radio-group v-else-if="item.type == 'radio'" v-model="action.dialog.formData[item.field]">
-              <el-radio v-for="option in item.options" :key="option.value" :label="option.value" class="radio">{{ option.label }}</el-radio>
-            </el-radio-group>
-            <el-input-number
-              v-else-if="item.type == 'number'"
-              v-model="action.dialog.formData[item.field]"
-              :min="item.option.min"
-              :max="item.option.max"
-            />
-            <el-date-picker
-              v-else-if="item.type == 'date'"
-              v-model="action.dialog.formData[item.field]"
-              :type="item.type"
-              placeholder="选择日期"
-            />
-            <el-input
-              v-else-if="item.type == 'textarea'"
-              v-model="action.dialog.formData[item.field]"
-              type="textarea"
-            />
-          </el-form-item>
-        </el-form>
+          <el-form
+            v-if="action.dialog.columns && action.dialog.columns.length > 0"
+            :ref="action.name + 'Form'"
+            :model="action.dialog.formData"
+            :rules="action.dialog.formRules"
+            :label-width="action.dialog.labelWidth ? action.dialog.labelWidth : '100px'"
+          >
+            <el-form-item v-for="item in action.dialog.columns" :key="item.field" :label="item.title" :prop="item.field">
+              <el-col v-if="item.type == 'input'" :span="20">
+                <el-input
+                  v-model="action.dialog.formData[item.field]"
+                  auto-complete="off"
+                  style="width: 100%"
+                />
+              </el-col>
+              <el-col v-else-if="item.type == 'radio'" :span="20">
+                <el-radio-group v-model="action.dialog.formData[item.field]">
+                  <el-radio v-for="option in item.options" :key="option.value" :label="option.value" class="radio" style="width: 100%">{{ option.label }}</el-radio>
+                </el-radio-group>
+              </el-col>
+              <el-col v-else-if="item.type == 'number'" :span="20">
+                <el-input-number
+                  v-model="action.dialog.formData[item.field]"
+                  :min="item.option.min"
+                  :max="item.option.max"
+                  style="width: 100%"
+                />
+              </el-col>
+              <el-col v-else-if="item.type == 'date'" :span="20">
+                <el-date-picker
+                  v-model="action.dialog.formData[item.field]"
+                  :type="item.type"
+                  placeholder="选择日期"
+                  style="width: 100%"
+                />
+              </el-col>
+              <el-col v-else-if="item.type == 'textarea'" :span="20">
+                <el-input
+                  v-model="action.dialog.formData[item.field]"
+                  type="textarea"
+                  style="width: 100%"
+                />
+              </el-col>
+              <el-col v-else-if="item.type == 'select'" :span="20">
+                <im-select
+                  :dependon-value="item.dependon ? action.dialog.formData[item.dependon] + '' : ''"
+                  :dependon-key="item.dependon ? item.dependon : ''"
+                  :source="item.source ? item.source : null"
+                  :key-props="item.dependon ? item.keyProps : null"
+                  :url="item.url"
+                  style="width: 100%"
+                  @select-change="(val) => $set(action.dialog.formData, item.field, val)"
+                />
+              </el-col>
+            </el-form-item>
+          </el-form>
+        </el-scrollbar>
         <div slot="footer" class="dialog-footer">
           <el-button @click.native="action.dialog.visible = false; $refs[action.name + 'Form'][0].resetFields();">取消</el-button>
           <el-button type="primary" @click.native="formDialogSubmit(action.name)">提交</el-button>
@@ -193,6 +230,7 @@
         :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
+        :top="dialogTop"
         @close="handleDialogClose(action.name, action.name + 'TreeDialog')"
       >
         <im-tree
@@ -215,6 +253,7 @@
         :visible.sync="action.dialog.visible"
         :close-on-click-modal="false"
         :title="action.dialog.title"
+        :top="dialogTop"
         @close="handleDialogClose(action.name, action.name + 'TableDialog')"
       >
         <im-table
@@ -277,7 +316,8 @@ export default {
 
       // 记录多选记录
       multipleSelection: [],
-      searchLoading: false
+      searchLoading: false,
+      dialogTop: '10vh'
     }
   },
 
@@ -390,6 +430,21 @@ export default {
       })
     },
 
+    handleConfirm(index, row, type, url, name) {
+      this.$confirm('确认' + name + '该记录吗？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        commonAPI.Post(url, { id: row.id }).then(res => {
+          this.$message({
+            type: 'success',
+            message: name + '成功'
+          })
+          this.load()
+        })
+      }).catch(() => {
+        // cancel
+      })
+    },
     // other event
     handleSelectionChange(val) {
       this.multipleSelection = val
@@ -558,6 +613,17 @@ export default {
 .mini-btn-style {
   /deep/ span {
     margin-left: 0px;
+  }
+}
+.el-scrollbar__view {
+  .el-form {
+    margin-right: 10px;
+  }
+}
+/deep/ .el-scrollbar{
+
+  .el-select-dropdown__wrap.el-scrollbar__wrap {
+    max-height: 350px;
   }
 }
 </style>
