@@ -173,6 +173,32 @@ let menuList = [
         sort: 20,
         remarks: '',
         parentId: 17
+      },
+      {
+        id: 21,
+        menuName: 'Form',
+        menuCode: 'formHistory',
+        type: 'menu',
+        path: '/form',
+        icon: 'solid_table',
+        component: '/history/form/index',
+        usable: 1,
+        sort: 20,
+        remarks: '',
+        parentId: 17
+      },
+      {
+        id: 28,
+        menuName: 'FormValidation',
+        menuCode: 'formValidation',
+        type: 'menu',
+        path: '/formvalidation',
+        icon: 'solid_table',
+        component: '/history/form/Validation',
+        usable: 1,
+        sort: 20,
+        remarks: '',
+        parentId: 17
       }
     ]
   }

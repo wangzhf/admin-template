@@ -98,6 +98,20 @@ const userMap = {
         method: 'GET',
         type: 'menu',
         uri: '/dialog'
+      },
+      {
+        menuCode: 'formHistory',
+        menuName: 'Form',
+        method: 'GET',
+        type: 'menu',
+        uri: '/form'
+      },
+      {
+        menuCode: 'formValidation',
+        menuName: 'FormValidation',
+        method: 'GET',
+        type: 'menu',
+        uri: '/formvalidation'
       }
     ]
   },
